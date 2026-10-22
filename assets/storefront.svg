@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 490" fill="none">
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e7e9de"/><stop offset="1" stop-color="#f2ecdf"/></linearGradient>
+  <linearGradient id="glass" x2="0" y2="1"><stop stop-color="#a9bbb0"/><stop offset="1" stop-color="#d9d9bc"/></linearGradient>
+  <linearGradient id="bread" x2="0.4" y2="1"><stop stop-color="#efc67c"/><stop offset="1" stop-color="#ba783c"/></linearGradient>
+  <pattern id="brick" width="80" height="36" patternUnits="userSpaceOnUse"><path d="M0 0H80M0 36H80M40 0V18M0 18H80M0 18V36M80 18V36" stroke="#d8c9b4" stroke-width="1" opacity=".5"/></pattern>
+  <pattern id="wall" width="60" height="24" patternUnits="userSpaceOnUse"><path d="M0 24H60M30 0V24" stroke="#e3d8c6" stroke-width="1"/></pattern>
+  <filter id="shadow"><feGaussianBlur stdDeviation="8"/></filter>
+  <g id="loaf"><rect width="38" height="23" rx="11" fill="url(#bread)"/><path d="m11 4-3 10m14-10-3 10m13-9-3 10" stroke="#f8de9c" stroke-width="3" stroke-linecap="round"/></g>
+  <g id="plant"><path d="M-5 0-9-48M0 0 8-67M4-1 28-38" stroke="#698a62" stroke-width="3"/><ellipse cx="-13" cy="-32" rx="7" ry="17" transform="rotate(-30 -13 -32)" fill="#7e976a"/><ellipse cx="-2" cy="-51" rx="7" ry="17" transform="rotate(28 -2 -51)" fill="#8ba479"/><ellipse cx="12" cy="-57" rx="7" ry="17" transform="rotate(22 12 -57)" fill="#64855c"/><ellipse cx="23" cy="-31" rx="7" ry="16" transform="rotate(40 23 -31)" fill="#93a676"/><path d="M-18-5H23L17 29H-12Z" fill="#ba8065"/><path d="M-20-7H25V0H-20Z" fill="#d49b7c"/></g>
+</defs>
+<path fill="url(#sky)" d="M0 0H1000V490H0Z"/>
+<circle cx="841" cy="75" r="33" fill="#faf2ce" opacity=".8"/>
+<path d="M0 75c49-42 61 17 99-3s55-22 76 3M780 42c21-16 42-15 56 0" stroke="#fbf9ee" stroke-width="13" stroke-linecap="round"/>
+<!-- Neighbouring houses -->
+<path d="M0 102H179V403H0Z" fill="#e4d9c7"/><path d="M0 110H179V403H0Z" fill="url(#wall)"/><path d="M40 161H107V250H40Z" fill="#d1c8b5"/><path d="M49 169H99V238H49Z" fill="#b8c4b6"/><path d="M74 169V238M49 204H99" stroke="#eae1cf" stroke-width="6"/>
+<path d="M825 126H1000V406H825Z" fill="#e7dece"/><path d="M858 167H911V245H858Z" fill="#b9c2b3"/><path d="M884 167V245M858 204H911" stroke="#f0e8d9" stroke-width="6"/>
+<!-- street -->
+<path d="M0 402H1000V490H0Z" fill="#dfd5c3"/><path d="M0 418H1000" stroke="#f2ecdf" stroke-width="3"/><path d="M0 455H1000M50 418V455M186 455V490M317 418V455M466 455V490M602 418V455M765 455V490M900 418V455" stroke="#cec4b2" stroke-width="1.5"/>
+<ellipse cx="507" cy="418" rx="332" ry="19" fill="#a79980" opacity=".17" filter="url(#shadow)"/>
+<!-- main building -->
+<rect x="194" y="67" width="609" height="344" rx="3" fill="#eee5d4"/>
+<path d="M194 67H803V411H194Z" fill="url(#brick)"/>
+<path d="M183 65H814V80H183Z" fill="#c9b99d"/><path d="M191 79H807V85H191Z" fill="#ded1b9"/>
+<path d="M212 91H785V172H212Z" fill="#f3ecde"/>
+<text x="499" y="129" text-anchor="middle" fill="#3b5b4b" font-size="31" letter-spacing="12" font-family="Georgia,serif">MAI JIAN</text>
+<text x="499" y="153" text-anchor="middle" fill="#8f8a72" font-size="9" letter-spacing="5" font-family="Arial,sans-serif">BREAD · BUTTER · BETTER DAYS</text>
+<path d="M216 179H783L806 235H193Z" fill="#7c9580"/>
+<path d="M247 179H278L266 235H233ZM308 179H339L334 235H301ZM369 179H400L401 235H368ZM431 179H462L468 235H435ZM492 179H523L535 235H502ZM553 179H584L602 235H569ZM614 179H645L669 235H636ZM675 179H706L736 235H703ZM736 179H767L803 235H770Z" fill="#efe9d8"/>
+<path d="M193 235H806V246c-13 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-34 0-12 13-21 13-35 0Z" fill="#718c76"/>
+<!-- left bakery window -->
+<rect x="225" y="254" width="286" height="132" rx="2" fill="#627a64"/><rect x="234" y="261" width="267" height="116" fill="url(#glass)"/>
+<path d="M235 262 500 377M407 261 501 302" stroke="#e6eee0" stroke-width="18" opacity=".2"/>
+<path d="M237 345H499V376H237Z" fill="#c6a47a"/><path d="M239 346H497V352H239Z" fill="#997a57"/>
+<use href="#loaf" x="253" y="322"/><use href="#loaf" x="300" y="322"/><use href="#loaf" x="347" y="322"/>
+<path d="M408 329c0-10 11-10 11-19s12-9 12 0 11 9 11 19" fill="#d29b53"/><path d="M448 329c0-10 11-10 11-19s12-9 12 0 11 9 11 19" fill="#e7b86d"/>
+<path d="M234 340H501M369 261V377" stroke="#637a63" stroke-width="7"/>
+<path d="M217 385H519V394H217Z" fill="#c9b99d"/>
+<!-- door -->
+<path d="M532 253H638V405H532Z" fill="#5a7460"/><path d="M541 262H629V358H541Z" fill="url(#glass)"/>
+<path d="M541 365H629V397H541Z" fill="#6f8870"/><path d="M550 372H620V390H550Z" stroke="#8a9d82"/>
+<circle cx="620" cy="345" r="3.5" fill="#dfc38b"/>
+<path d="M573 277 585 266 597 277" stroke="#e8d7b4"/>
+<rect x="555" y="277" width="60" height="29" rx="2" fill="#f3e7c8" transform="rotate(-4 555 277)"/><text x="585" y="295" text-anchor="middle" fill="#5c765d" font-size="10" font-family="Georgia,serif" letter-spacing="2">OPEN</text>
+<path d="M527 405H645V413H527Z" fill="#bbac94"/>
+<!-- right display -->
+<rect x="657" y="254" width="111" height="132" fill="#657e67"/><rect x="665" y="262" width="95" height="115" fill="url(#glass)"/>
+<path d="M666 328H760V375H666Z" fill="#c7a681"/><ellipse cx="713" cy="326" rx="34" ry="5" fill="#ede5d1"/>
+<path d="M689 304H738V324H689Z" fill="#eac9ad"/><path d="M688 303c5-9 45-9 51 0v8c-7 5-9-4-16 0s-10-5-16 0-10-4-19 0Z" fill="#f9eedc"/><path d="M698 297c-5-13 9-13 8-2M717 294c-2-13 11-10 8 2M729 298c-1-12 11-9 6 0" fill="#c77762"/>
+<path d="M650 385H775V394H650Z" fill="#c9b99d"/>
+<!-- bench -->
+<path d="M71 349H166V376H71Z" fill="#a48c68"/><path d="M65 382H173V391H65Z" fill="#a48c68"/><path d="M76 391V414M160 391V414" stroke="#687968" stroke-width="6"/>
+<path d="M71 360H166M71 370H166" stroke="#c3ab88" stroke-width="2"/>
+<!-- chalkboard -->
+<path d="m678 411 12-61h59l15 61M691 353l-11 69M746 353l12 69" stroke="#a08056" stroke-width="5" stroke-linecap="round"/>
+<path d="M693 353H745L754 402H684Z" fill="#435d4b"/><text x="718" y="372" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="#e7e3cb">freshly</text><text x="719" y="386" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#e7e3cb">baked.</text><path d="M700 393H739" stroke="#9baf8c"/>
+<!-- plants -->
+<use href="#plant" x="220" y="388"/><use href="#plant" x="791" y="390"/><use href="#plant" x="894" y="388" transform="rotate(-7 894 388)"/>
+<path d="M35 0c19 27 10 41 29 68s21 22 30 46" stroke="#8a8b68" stroke-width="8"/>
+<g fill="#82936c"><ellipse cx="21" cy="32" rx="38" ry="15" transform="rotate(25 21 32)"/><ellipse cx="64" cy="44" rx="30" ry="14" transform="rotate(-27 64 44)"/><ellipse cx="56" cy="78" rx="36" ry="14" transform="rotate(29 56 78)"/><ellipse cx="95" cy="96" rx="30" ry="13" transform="rotate(-23 95 96)"/><ellipse cx="17" cy="1" rx="40" ry="18"/></g>
+<g fill="#a6ac83"><ellipse cx="17" cy="52" rx="26" ry="11" transform="rotate(30 17 52)"/><ellipse cx="66" cy="91" rx="24" ry="10" transform="rotate(30 66 91)"/></g>
+<path d="M907 396c-5-18 18-21 15-36M924 395c1-20 20-16 24-33" stroke="#939c76" stroke-width="3"/><circle cx="921" cy="360" r="5" fill="#d0b88a"/><circle cx="949" cy="362" r="5" fill="#d0b88a"/>
+</svg>

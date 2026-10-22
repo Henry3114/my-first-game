@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f5ef" />
+  <meta name="description" content="在街角开一家温暖的烘焙店。烤面包、认识街坊，慢慢把小店经营成喜欢的模样。" />
+  <title>麦间 · 街角烘焙日记</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTgiIGZpbGw9IiMzMTU4NGIiLz48cGF0aCBkPSJNMjEgNDggNDIgMTdNMzAgMzVjLTEzIDItMTUtOC0xNS04IDEyLTMgMTUgOCAxNSA4Wm02LThjLTExIDAtMTItOS0xMi05IDExLTEgMTIgOSAxMiA5Wm0tMTIgMTdjLTEyIDItMTQtNy0xNC03IDEyLTMgMTQgNyAxNCA3Wm05LTExYzItMTIgMTItMTIgMTItMTIgMSAxMS0xMiAxMi0xMiAxMlptLTYgOWM0LTExIDE0LTkgMTQtOS0xIDExLTE0IDktMTQgOVoiIGZpbGw9IiNlZWUwYmEiLz48L3N2Zz4K" />
+  <style>
+:root{--paper:#f7f5ef;--white:#fffefa;--green:#31594b;--green-dark:#254638;--green-soft:#eaf0e8;--ink:#303c32;--muted:#8b8b7d;--line:#e8e6dc;--clay:#bb7c5f;--gold:#bd9653;--serif:Georgia,'Songti SC','Noto Serif CJK SC','SimSun',serif;--sidebar:224px}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased}button,a,input{-webkit-tap-highlight-color:transparent}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}button,a{touch-action:manipulation}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #c69a5b;outline-offset:4px}a{color:inherit;text-decoration:none}button{color:inherit}h1,h2,h3,p{margin:0}button{border:0}button .icon{flex-shrink:0}.icon{width:20px;height:20px;vertical-align:middle;flex-shrink:0}button{transition:background .18s,transform .18s,box-shadow .18s}button:active:not(:disabled){transform:translateY(1px)}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:#f0eee5;border-right:1px solid #e4e3d8;display:flex;flex-direction:column;padding:38px 22px 20px;z-index:10}.brand{display:flex;align-items:center;gap:13px;padding:0 10px}.brand-mark{width:42px;height:48px;color:var(--green);display:grid;place-items:center}.brand-mark .icon{width:36px;height:43px;stroke-width:1.1}.brand-name{font-family:var(--serif);font-size:31px;letter-spacing:6px;font-weight:600}.brand-name>span{display:block;font-family:Georgia,serif;font-size:8px;letter-spacing:2px;font-weight:400;margin-top:6px;white-space:nowrap}.sidebar-label{font-size:10px;letter-spacing:2px;color:#9a9b8c;margin:34px 0 19px 11px}.sidebar nav{display:flex;flex-direction:column;gap:9px}.nav-item{width:100%;display:flex;align-items:center;gap:13px;text-align:left;background:transparent;padding:15px 15px;border-radius:7px;color:#7e8376}.nav-item small{margin-left:auto;font-family:Georgia,serif;font-size:10px;opacity:.55}.nav-item.active{background:var(--green);color:#fffdf1;box-shadow:0 5px 12px #31594b10}.nav-item:not(.active):hover{background:#e5e6db}.nav-item .icon{width:19px}.sidebar-bottom{margin-top:auto;padding-top:48px}.little-note{border-top:1px solid #ddded0;border-bottom:1px solid #ddded0;text-align:center;padding:26px 0 23px;color:#969b83}.little-note>.icon{width:27px;height:32px;stroke-width:1.1;transform:rotate(12deg);margin-bottom:11px}.little-note p{font-family:var(--serif);font-size:15px;letter-spacing:2px;line-height:1.9;color:#6b7863}.little-note>span{font-size:7px;letter-spacing:1.5px;display:block;margin-top:12px}.save-status{display:flex;justify-content:center;align-items:center;gap:6px;font-size:10px;color:#8b9381;margin-top:22px}.save-status .icon{width:13px;height:13px}.settings-button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:none;font-size:11px;color:#777e70;margin-top:16px}.settings-button .icon{width:15px;height:15px}main{margin-left:var(--sidebar);padding:0 36px;max-width:1800px}.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.breadcrumb{font-size:11px;color:#717b6d}.breadcrumb span{margin:0 12px;color:#b7b8aa}.topbar-right{display:flex;align-items:center;gap:14px}.day-badge{font-size:10px;letter-spacing:1.5px;font-weight:700;color:var(--green);padding:7px 11px;background:#e9ede3;border-radius:4px}.day-label{font-size:10px;color:#898e80;letter-spacing:1px}.icon-button{width:33px;height:33px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid #e1e3d7;border-radius:50%;color:#73806d}.icon-button .icon{width:15px;height:15px}.icon-button:hover,.icon-button.selected{background:#e1e9dd}.page-heading{display:flex;align-items:center;justify-content:space-between;padding:31px 0 27px;gap:20px}.eyebrow{font-size:10px;letter-spacing:2px;color:#9b8c6c;font-weight:500}.eyebrow span{font-size:8px;letter-spacing:2px;color:#a9a99b;margin-left:15px}h1{font-family:var(--serif);font-size:29px;font-weight:500;letter-spacing:2px;margin-top:10px}.subtitle{font-size:11px;color:#96998c;margin-top:12px;letter-spacing:1px}.heading-action{text-align:center;flex-shrink:0}.heading-action>span{font-size:9px;letter-spacing:.5px;color:#979b8c;display:block;margin-top:10px}.button{min-height:41px;padding:10px 17px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:5px;font-size:12px;line-height:1.5;font-weight:500}.button .icon{width:16px;height:16px}.button.primary{color:#fffbed;background:var(--green);border:1px solid var(--green)}.button.primary:hover:not(:disabled){background:var(--green-dark);box-shadow:0 4px 10px #31594b15}.heading-action .primary{padding:12px 21px;min-height:45px}.button.outline{background:transparent;border:1px solid #d5dcd0;color:var(--green)}.button.outline:hover:not(:disabled){background:var(--green-soft)}.button.completed{background:var(--green-soft);color:var(--green)}.button.danger{background:#ac614e;color:white}.full{width:100%}.metrics{display:grid;grid-template-columns:1.05fr 1.1fr 1.15fr 1.05fr;background:var(--white);border:1px solid var(--line);border-radius:8px;margin-bottom:26px;padding:22px 5px}.metric{display:flex;gap:13px;padding:0 18px;border-right:1px solid var(--line);min-width:0}.metric:last-child{border:0}.metric-icon{width:35px;height:35px;display:grid;place-items:center;flex-shrink:0;background:#eff1e8;color:#6c8160;border-radius:50%;margin-top:2px}.metric-icon .icon{width:18px;height:18px}.metric-icon.terracotta{background:#f6eee6;color:#bd8b6c}.metric-icon.gold{background:#f5f0df;color:#b79a54}.metric-label{display:block;font-size:10px;color:#989a8d;margin:1px 0 9px}.metric strong{font-family:Georgia,'Songti SC',serif;font-size:25px;font-weight:400;display:block;white-space:nowrap}.metric strong em{font-family:inherit;font-size:11px;font-style:normal;color:#adb0a0;margin-left:6px}.metric small{display:block;font-size:8px;line-height:1.5;margin-top:9px;color:#a0a393}.rep-tag{font-family:system-ui,sans-serif;font-size:8px;color:#798b6e;background:#edf0e3;vertical-align:middle;padding:4px 5px;border-radius:3px;margin-left:8px}.weather strong{font-family:var(--serif);font-size:20px;padding-top:3px}.weather .metric-icon{background:none;width:31px;color:#bd9a56}.weather .metric-icon .icon{width:29px;height:29px;stroke-width:1.3}.panel{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden}.panel-heading{height:56px;padding:0 20px;display:flex;justify-content:space-between;align-items:center}.panel-heading h2{font-size:13px;font-weight:550;letter-spacing:1px}.panel-heading h2 span{font-size:8px;font-weight:400;color:#a3a596;letter-spacing:1.5px;margin-left:14px}.panel-heading>.icon{color:#aa9d7e;width:18px}.shop-layout{display:grid;grid-template-columns:minmax(0,2.5fr) minmax(265px,1fr);gap:22px;align-items:stretch}.scene-card{display:flex;flex-direction:column}.status-pill{display:inline-flex;align-items:center;gap:6px;font-size:9px;color:#8b8c7b;background:#f0efe6;padding:5px 9px;border-radius:15px;white-space:nowrap}.status-pill i{width:5px;height:5px;border-radius:50%;background:#aaa88e}.status-pill.open{color:#527752;background:#edf2e7}.status-pill.open i{background:#75975b;box-shadow:0 0 0 3px #75975b10}.shop-scene{background:#e9e7d8;position:relative;overflow:hidden;flex:1;display:flex;align-items:flex-end;min-height:240px}.storefront{width:100%;height:auto;display:block;transition:filter .6s}.theme-rose .storefront{filter:hue-rotate(305deg) saturate(.7)}.theme-sand .storefront{filter:sepia(.28) saturate(.9)}.shop-scene.rainy .storefront{filter:saturate(.75) brightness(.94)}.scene-note{position:absolute;left:18px;top:17px;background:#fffcf0d9;border:1px solid #fffcf0;padding:7px 10px;display:flex;align-items:center;gap:6px;color:#858a70;font-size:8px;border-radius:4px;backdrop-filter:blur(6px)}.scene-note .icon{width:12px;height:12px}.scene-label{position:absolute;bottom:10px;left:15px;font-size:6px;letter-spacing:2px;color:#948c75}.shop-clock{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line);background:#fdfcf6}.shop-clock>span:first-child{display:flex;align-items:center;gap:6px;white-space:nowrap}.shop-clock .icon{width:14px;height:14px;color:#8d977d}.shop-clock b{font-family:Georgia,serif;font-size:14px;font-weight:400}.shop-clock small{font-size:8px;color:#a4a594;margin-left:3px}.time-track{height:3px;flex:1;background:#e8e9df;border-radius:3px;overflow:hidden;min-width:20px}.time-track i{display:block;height:100%;background:#8c9e76;transition:width 1s linear}.clock-end{font-size:8px;color:#a4a594;white-space:nowrap}.oven-strip{padding:14px 18px;display:flex;align-items:center;gap:17px;background:#fffefa;min-height:74px}.oven-label{display:flex;gap:10px;align-items:center;flex-shrink:0}.oven-label>.icon{color:#a49d80;width:23px;height:23px}.oven-label strong{display:block;font-size:10px;font-weight:500;margin-bottom:6px}.oven-label span{font-size:8px;color:#a3a590}.oven-slots{display:flex;gap:8px;flex:1;min-width:0}.oven-empty{background:#f5f4ed;border:1px dashed #e1e2d5;display:flex;justify-content:center;align-items:center;padding:12px;gap:7px;font-size:9px;color:#a2a48d;flex:1}.oven-empty .icon{width:11px;height:11px}.oven-job{flex:1;background:#f2edde;border-radius:4px;padding:10px;min-width:0}.oven-job>span{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;white-space:nowrap}.oven-job b{font-size:10px;color:#aa8453;font-weight:500}.oven-job .progress{margin-top:7px}.progress{height:4px;background:#e5e7da;border-radius:4px;overflow:hidden}.progress i{display:block;height:100%;background:#7e9675;border-radius:4px;transition:width .4s}.oven-job .progress i{background:#bb9a5e}.today-column{display:flex;flex-direction:column;gap:14px}.order-card{padding-bottom:17px}.order-card .panel-heading{height:52px}.order-card>.button{width:calc(100% - 34px);margin:13px 17px 0;font-size:11px;min-height:36px}.order-paper{background:#f8f5e9;margin:5px 17px 0;padding:20px 14px 14px;position:relative;border:1px solid #ede7d4;border-radius:3px}.paper-pin{height:17px;width:55px;position:absolute;top:-9px;left:calc(50% - 27px);background:#c9c5a98c;transform:rotate(-5deg)}.order-top{display:flex;justify-content:space-between;align-items:center;gap:5px}.order-number{font-family:Georgia,serif;letter-spacing:1.3px;font-size:8px;color:#a89d7d}.handwritten{font-family:var(--serif);font-size:8px;color:#aaa18b}.order-paper h3{font-family:var(--serif);font-size:16px;font-weight:500;margin-top:17px;letter-spacing:1px}.order-paper>p{font-size:9px;color:#9c9985;line-height:1.8;margin-top:7px}.order-product{display:flex;align-items:center;gap:8px;margin:12px 0}.order-product .pastry{width:70px;height:56px;flex-shrink:0}.order-product strong{font-size:11px;font-weight:500}.order-product div>span{display:block;font-size:8px;color:#9d9b85;margin-top:7px}.order-reward{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed #dcd8c3;border-bottom:1px dashed #dcd8c3;padding:11px 0;margin:0 0 12px}.order-reward>span{font-size:9px;color:#96967c}.order-reward b{font-family:Georgia,serif;font-size:22px;font-weight:400;color:#718365}.order-progress{display:flex;justify-content:space-between;font-size:8px;color:#8e927b;margin-bottom:7px}.daily-note{background:#eeeee2;border:1px solid #e4e4d4;border-radius:6px;padding:15px 18px;flex:1;position:relative}.daily-note>span{display:flex;align-items:center;gap:6px;color:#8a8f72;font-size:9px}.daily-note .icon{width:13px;height:13px}.daily-note p{font-family:var(--serif);font-size:12px;color:#798268;line-height:1.8;margin:10px 0}.daily-note small{font-size:8px;color:#a5a890}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:25px 0 17px}.section-heading h2{font-size:15px;font-weight:500;letter-spacing:1px}.section-heading h2 span{font-size:8px;font-weight:400;color:#a6a797;letter-spacing:1.7px;margin-left:12px}.section-heading p{font-size:10px;color:#9e9e8e;letter-spacing:.5px;margin-top:7px}.menu-tools{display:flex;gap:17px;align-items:center}.capacity{font-size:9px;color:#989c89;white-space:nowrap}.text-button{display:inline-flex;justify-content:center;align-items:center;gap:8px;color:#71856b;font-size:10px;background:none;padding:9px 0}.text-button .icon{width:14px;height:14px}.text-button:hover{color:var(--green-dark)}.discount-button{display:flex;align-items:center;gap:6px;font-size:9px;background:none;white-space:nowrap;color:#8e947e;padding:5px 0}.switch{display:inline-flex;width:23px;height:13px;background:#dadccd;border-radius:9px;padding:2px}.switch i{width:9px;height:9px;border-radius:50%;background:#fffefa;transition:transform .2s}.switch.on{background:#72916a}.switch.on i{transform:translateX(10px)}.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}.product-card{background:var(--white);border:1px solid var(--line);border-radius:7px;overflow:hidden;transition:box-shadow .2s}.product-card:hover{box-shadow:0 5px 20px #5e59340a}.product-art{position:relative;background:#f2eadc;height:148px;display:flex;align-items:center;justify-content:center;overflow:hidden}.product-art:before{content:'';position:absolute;width:164px;height:104px;border:1px solid #e6dcc8;border-radius:50%;transform:rotate(-14deg)}.product-art .pastry{width:178px;height:143px;position:relative;z-index:1;transition:transform .35s}.product-card:hover .product-art .pastry{transform:translateY(-3px) rotate(-2deg)}.art-toast{background:#edece1}.art-toast:before{border-color:#dedfce}.art-croissant{background:#f1e9df}.art-cinnamon{background:#eee6dc}.art-cake{background:#f4e6de}.art-tart{background:#f1ecd8}.product-tag{position:absolute;left:12px;top:12px;font-size:8px;color:#968b6c;background:#fffcf0aa;padding:4px 7px;border-radius:3px;z-index:2;display:flex;align-items:center;gap:3px}.product-tag .icon{width:10px;height:10px}.stock-count{position:absolute;bottom:11px;right:12px;font-size:8px;color:#9a8c6f;background:#fffaf0db;padding:5px 9px;border-radius:4px;z-index:2}.stock-count b{font-size:12px;color:#6f7b5b;margin-left:4px;font-weight:500}.product-body{padding:17px}.product-title{display:flex;align-items:center;justify-content:space-between;gap:9px}.product-title h3{font-size:14px;font-weight:500;letter-spacing:.5px}.product-title div>span{font-family:Georgia,serif;font-size:9px;color:#a2a18e;margin-top:5px;display:block;letter-spacing:.5px}.product-title>strong{font-family:Georgia,serif;font-size:23px;font-weight:400;color:#a38459;white-space:nowrap}.product-title>strong small{font-family:system-ui,sans-serif;font-size:8px;color:#aaa593;margin-left:4px}.product-body>p{font-size:9px;color:#a0a18f;line-height:1.8;margin-top:12px}.product-meta{display:flex;justify-content:space-between;gap:5px;color:#9b9e88;font-size:8px;margin:14px 0 13px}.product-meta .icon{width:11px;height:11px;margin-right:2px}.bake-button{background:#edf0e6;color:#617858;min-height:36px;border:1px solid #e1e7d8;justify-content:flex-start;font-size:10px}.bake-button>span{margin-left:auto;color:#8e987d;font-size:10px}.bake-button:hover:not(:disabled){background:#e0e9d7}.recipe-grid{row-gap:24px}.research-button{background:#f2eee4;border:1px solid #e8dfce;color:#a18d69;font-size:10px}.recipe-profit{display:flex;align-items:center;gap:6px;font-size:8px;color:#929a83;margin-top:13px}.recipe-profit b{color:#6e8561;font-weight:500}.recipe-profit span{margin-left:auto;color:#aaa999;font-size:7px}.is-locked .product-art .pastry{opacity:.68}.section-intro{display:flex;align-items:center;gap:20px;margin-bottom:24px}.tag{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid #e0e6d5;border-radius:5px;background:#edf0e5;font-size:10px;color:#81906e;white-space:nowrap}.tag .icon{width:14px;height:14px}.section-intro p{font-size:11px;color:#969a88;line-height:1.8}.growth-banner{background:#e9eddf;border:1px solid #dfe5d4;padding:30px 35px;display:flex;align-items:center;justify-content:space-between;border-radius:8px;margin-bottom:24px}.growth-banner h2{font-family:var(--serif);font-weight:400;font-size:26px;letter-spacing:2px;margin:12px 0}.growth-banner p{font-size:11px;color:#88947a;line-height:1.8}.growth-banner>.icon{width:80px;height:90px;stroke-width:.7;color:#a5ad86;transform:rotate(12deg);margin-right:20px}.upgrade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.upgrade-card{padding:24px}.upgrade-icon{display:grid;place-items:center;width:49px;height:49px;background:#f1eee2;border-radius:10px;color:#a39065;margin-bottom:20px}.upgrade-icon .icon{width:25px;height:25px}.upgrade-heading{display:flex;justify-content:space-between;align-items:center}.upgrade-heading h3{font-size:16px;font-weight:500;letter-spacing:1px}.upgrade-heading>span{font-size:10px;color:#96a086}.upgrade-card>p{font-size:11px;color:#929984;line-height:1.8;margin:12px 0}.upgrade-dots{display:flex;gap:5px;margin:18px 0}.upgrade-dots i{width:32px;height:4px;border-radius:3px;background:#e8e9de}.upgrade-dots i.filled{background:#7e9470}.upgrade-card .button{justify-content:space-between}.upgrade-card .button>span{display:flex;gap:8px;align-items:center}.decoration{display:flex;justify-content:space-between;align-items:center;padding:30px;margin-top:24px;gap:20px}.decoration h2{font-family:var(--serif);font-size:23px;font-weight:400;letter-spacing:1px;margin:12px 0}.decoration p{font-size:10px;color:#969c86;line-height:1.8}.theme-options{display:flex;gap:18px}.theme-button{background:transparent;display:flex;align-items:center;flex-direction:column;gap:10px;padding:5px;font-size:9px;color:#999c89}.theme-swatch{height:40px;width:40px;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 4px #f6f5ed,0 0 0 5px #e5e7da;color:#fff9e9}.theme-swatch.sage{background:#7b937a}.theme-swatch.rose{background:#b48c86}.theme-swatch.sand{background:#b59a73}.theme-button.active{color:var(--green)}.regulars .section-heading{margin-top:0}.regular-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.regular-card{display:flex;gap:20px;padding:25px}.avatar{width:65px;height:72px;background:var(--avatar-color);border-radius:45% 45% 40% 40%;font-family:var(--serif);font-size:28px;color:#fff8df;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}.avatar>span{position:absolute;right:-6px;bottom:0;width:23px;height:23px;background:#fbf7eb;border-radius:50%;display:grid;place-items:center;color:#b28a70}.avatar .icon{width:13px;height:13px}.regular-card h3{font-weight:500;font-size:15px;margin-bottom:6px}.regular-card h3 small{font-size:8px;padding:4px 6px;background:#edf0e4;border-radius:3px;color:#95a17d;margin-left:12px}.muted{font-size:10px;color:#9ca18c}.regular-card p{font-family:var(--serif);font-size:12px;color:#858e76;line-height:1.9;margin:16px 0}.friendship{display:flex;gap:5px;align-items:center}.friendship .icon{width:14px;height:14px;color:#d9ddca}.friendship .filled-heart{color:#b78872;fill:#b78872}.friendship>span{font-size:8px;color:#a1a58d;margin-left:6px}.journal-columns{display:grid;grid-template-columns:1.65fr 1fr;gap:20px;margin-top:25px;align-items:start}.journal-feed .panel-heading,.history-panel .panel-heading{border-bottom:1px solid var(--line)}.feed-item{display:flex;gap:12px;padding:17px 20px;border-bottom:1px solid #f0efe7}.feed-item:last-child{border:0}.feed-icon{width:26px;height:26px;background:#f0eee2;border-radius:50%;display:grid;place-items:center;color:#9b9676;flex-shrink:0}.feed-icon .icon{width:13px;height:13px}.feed-icon.sale{background:#edf1e5;color:#83976b}.feed-icon.miss{background:#f3eae1;color:#b49378}.feed-icon.regular{background:#f3e8df;color:#ba8d77}.feed-item p{font-size:11px;line-height:1.8;color:#7c8872}.feed-item small{font-size:8px;color:#a8ad96;display:block;margin-top:5px}.empty-state{font-family:var(--serif);text-align:center;padding:55px 20px;font-size:13px;line-height:2;color:#a0a68e}.history-row{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid var(--line);gap:12px}.history-row b{font-size:11px;font-weight:500}.history-row small{display:block;font-size:8px;color:#a3a88f;margin-top:7px}.history-row strong{text-align:right;font-size:20px;font-family:Georgia,serif;font-weight:400}.history-row strong>small{font-family:system-ui,sans-serif}.positive{color:#7c916a}.negative{color:#b37258!important}footer{display:flex;align-items:center;gap:15px;justify-content:flex-start;margin:33px 0 0;padding:20px 0 24px;border-top:1px solid var(--line);font-size:8px;color:#9da18c;letter-spacing:.5px}footer>span:first-child{color:#b2b49f}footer>span:last-child{margin-left:auto;display:flex;align-items:center;gap:6px}footer .icon{width:13px;height:13px;color:#a9ad92}.walker{position:absolute;bottom:12%;width:28px;height:60px;left:-5%;animation:stroll 25s linear infinite;z-index:2}.walker span{position:absolute;left:8px;top:0;width:14px;height:16px;background:#d4aa86;border-radius:50%;box-shadow:0 -4px 0 #6f6953}.walker i{position:absolute;left:4px;top:16px;width:23px;height:28px;background:#ab886b;border-radius:8px 8px 3px 3px}.walker i:before,.walker i:after{content:'';position:absolute;top:27px;width:6px;height:16px;background:#64715e;border-radius:0 0 2px 2px;left:4px;transform:rotate(8deg)}.walker i:after{left:14px;transform:rotate(-8deg)}.person-b{animation-delay:-13s;animation-direction:reverse;transform:scale(.85)}.person-b i{background:#829583}.rain-overlay{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(110deg,transparent 0,transparent 26px,#fff9 27px,transparent 28px);opacity:.15;animation:rain 1s linear infinite}#toast{position:fixed;left:calc(50% + 80px);bottom:32px;transform:translate(-50%,15px);background:#344e40f5;color:#fffcec;box-shadow:0 8px 30px #23352a20;max-width:calc(100vw - 40px);width:max-content;padding:14px 23px;font-size:12px;line-height:1.8;border-radius:7px;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}#toast.visible{opacity:1;transform:translate(-50%,0)}.modal-open{overflow:hidden}.modal-overlay{position:fixed;inset:0;background:#273d3270;backdrop-filter:blur(5px);z-index:100;display:flex;justify-content:center;align-items:center;padding:24px;animation:fade-in .15s}.modal{background:#fffcf3;border:1px solid #f8f1de;border-radius:13px;box-shadow:0 20px 80px #19332130;max-width:490px;width:100%;max-height:calc(100dvh - 48px);overflow:auto;padding:37px;position:relative;outline:none}.modal-close{position:absolute;right:15px;top:15px;border:0}.modal h2{font-family:var(--serif);font-weight:400;font-size:25px;line-height:1.5;letter-spacing:1px;margin:13px 0}.modal-subtitle{font-size:11px;color:#929982;line-height:2;margin:14px 0 20px}.modal>.button{margin-top:11px}.modal .eyebrow{font-size:9px}.summary-modal{text-align:center}.summary-art{margin:0 auto 18px;color:#a1976d;transform:rotate(12deg)}.summary-art .icon{width:38px;height:45px;stroke-width:1}.summary-main{padding:15px 0 23px;border-bottom:1px dashed #dcdcc7}.summary-main>span{font-size:10px;color:#999e83;display:block}.summary-main strong{font-size:43px;font-weight:400;font-family:Georgia,serif;color:#637f54;display:block;margin-top:10px}.summary-ledger{font-size:11px;margin:19px 0}.summary-ledger>div{display:flex;justify-content:space-between;margin:13px 0;gap:12px}.summary-ledger dt{color:#929880}.summary-ledger dd{margin:0;color:#7d886d}.summary-people{display:flex;gap:20px;justify-content:center;font-size:10px;color:#8c987b;padding:14px 0;border-top:1px dashed #dcdcc7}.summary-people .icon{width:14px;height:14px;margin-right:4px}.fine-print{font-size:9px;line-height:1.9;color:#a6ac93;text-align:left;margin-bottom:10px}.modal-symbol{width:38px;height:38px;color:#92a17d}.settings-group{border-top:1px solid var(--line);margin-top:22px;padding-top:20px}.settings-group h3{font-size:12px;font-weight:500;color:#7d8b6e;margin-bottom:15px}.settings-group .button{margin-top:10px}.settings-group p{font-size:11px;line-height:2;color:#919980;margin-top:10px}.import-button{cursor:pointer;position:relative;overflow:hidden}.import-button input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}.import-button:focus-within{outline:3px solid #c69a5b;outline-offset:3px}.danger-text{color:#b28a78!important;margin-top:22px}.page-content{animation:fade-in .2s}
+@keyframes stroll{0%{left:-5%;opacity:0}5%{opacity:1}90%{opacity:1}100%{left:105%;opacity:0}}@keyframes rain{from{background-position:0 0}to{background-position:-30px 100px}}@keyframes fade-in{from{opacity:.3}to{opacity:1}}
+@media(min-width:1550px){main{padding:0 50px}.shop-layout{grid-template-columns:minmax(0,2.6fr) minmax(300px,1fr)}.product-art{height:175px}.product-art .pastry{width:200px;height:160px}.order-paper{padding:24px 20px}.order-paper h3{font-size:19px}.order-product{margin:21px 0}.order-product .pastry{width:90px;height:72px}.daily-note{padding:20px}.daily-note p{font-size:14px}.metric small{font-size:10px}}
+@media(max-width:1200px){:root{--sidebar:190px}.sidebar{padding:30px 15px 20px}.brand{gap:7px}.brand-name{font-size:27px}.brand-name>span{font-size:7px}.brand-mark{width:33px}.brand-mark .icon{width:29px}.nav-item{padding:14px 12px;gap:10px}main{padding:0 25px}.metrics{grid-template-columns:1fr 1fr 1fr;padding:18px 0}.metric{padding:0 14px;gap:10px}.metric.weather{display:none}.metric:nth-child(3){border:0}.metric small{font-size:8px}.shop-layout{grid-template-columns:minmax(0,1fr) 255px;gap:16px}.panel-heading{padding:0 15px}.panel-heading h2 span{display:none}.shop-clock small{display:none}.shop-clock{padding:12px 15px;gap:12px}.clock-end{font-size:7px}.oven-strip{padding:12px 15px;gap:12px}.oven-label>.icon{display:none}.oven-empty{padding:10px 5px;font-size:8px}.product-grid{gap:14px}.product-body{padding:14px}.product-title>strong{font-size:21px}.product-body>p{font-size:8px}.product-meta{font-size:7px}.product-art{height:132px}.product-art .pastry{width:155px;height:124px}.menu-tools{gap:12px}.section-heading h2 span{display:none}.section-heading h2{font-size:14px}.product-title h3{font-size:13px}.metric strong{font-size:24px}.shop-scene{min-height:243px}.regular-card{padding:20px;gap:15px}.regular-grid{gap:15px}.avatar{width:47px;height:55px;font-size:24px}.friendship{gap:3px}.friendship>span{font-size:7px}.decoration{padding:25px}.theme-options{gap:9px}.recipe-profit span{display:none}}
+@media(max-width:980px){:root{--sidebar:74px}.sidebar{padding:27px 10px 20px}.brand{padding:0;justify-content:center}.brand-name,.sidebar-label,.nav-item span,.nav-item small,.little-note,.settings-button,.save-status span{display:none}.brand-mark{width:36px}.sidebar nav{margin-top:40px;gap:14px}.nav-item{padding:16px;justify-content:center}.nav-item .icon{width:21px;height:21px}.sidebar-bottom{padding-top:0}.save-status .icon{width:17px;height:17px}.page-heading{padding:26px 0}h1{font-size:27px}.metrics{margin-bottom:22px}.metric small{font-size:7px}.shop-layout{grid-template-columns:minmax(0,1fr) 245px}.order-paper{margin-left:13px;margin-right:13px;padding:20px 12px 13px}.order-card>.button{width:calc(100% - 26px);margin-left:13px;margin-right:13px}.handwritten{font-size:7px}.scene-note{font-size:7px;left:12px;top:13px}.shop-scene{min-height:231px}.shop-clock{gap:9px}.clock-end{display:none}.oven-label{display:none}.product-meta{flex-wrap:wrap;gap:6px}.menu-tools .capacity{display:none}.regular-grid{grid-template-columns:1fr}.journal-columns{grid-template-columns:1.4fr 1fr}.decoration{align-items:flex-start;flex-direction:column}.theme-options{gap:30px}.metric .rep-tag{font-size:7px}.metric strong em{font-size:9px}.metric-icon{width:30px;height:30px}.metric{gap:10px}.product-title>strong small{display:none}.product-body>p{line-height:1.9}.product-title h3{font-size:12px}.scene-label{font-size:5px}.growth-banner h2{font-size:24px}}
+@media(max-width:740px){:root{--sidebar:0px}.sidebar{inset:auto 0 0 0;width:100%;height:65px;padding:0 9px;flex-direction:row;background:#f7f5eff5;backdrop-filter:blur(12px);border-top:1px solid var(--line);border-right:0;z-index:50;box-shadow:0 -3px 20px #41543b05}.brand,.sidebar-bottom{display:none}.sidebar nav{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0;align-items:center}.nav-item{padding:8px 4px;gap:5px;flex-direction:column;border-radius:7px;font-size:9px}.nav-item span{display:block;font-size:9px}.nav-item .icon{width:18px;height:18px}.nav-item.active{box-shadow:none;background:#e5ebdf;color:var(--green)}main{padding:0 19px;margin-bottom:65px}.topbar{height:59px}.topbar-right{gap:9px}.day-label{display:none}.day-badge{font-size:9px;padding:6px 9px}.topbar .icon-button{width:29px;height:29px}.topbar .icon-button .icon{width:13px;height:13px}.breadcrumb{font-size:9px}.breadcrumb span{margin:0 8px}.page-heading{padding:25px 0 23px;gap:10px;align-items:flex-start}.eyebrow{font-size:8px;letter-spacing:1px}.eyebrow span{display:none}h1{font-size:22px;line-height:1.55;letter-spacing:1px;margin-top:8px;max-width:250px}.subtitle{font-size:9px;letter-spacing:0;margin-top:9px;line-height:1.7}.heading-action{padding-top:23px}.heading-action .button{padding:9px 11px;font-size:10px;min-height:37px;gap:5px}.heading-action .button .icon{width:13px;height:13px}.heading-action .button .icon:first-child{display:none}.heading-action>span{font-size:7px;max-width:130px;line-height:1.7;margin-top:8px}.metrics{padding:16px 0;margin-bottom:19px;border-radius:7px}.metric{display:block;padding:0 12px}.metric-icon{display:none}.metric-label{font-size:8px;margin-bottom:8px}.metric strong{font-size:23px}.metric strong em{font-size:8px;margin-left:4px}.metric small{display:none}.metric .rep-tag{display:block;width:max-content;margin:7px 0 0;font-size:7px;padding:3px 5px}.metric:nth-child(2) strong em{display:block;font-size:8px;margin:8px 0 0}.shop-layout{display:flex;flex-direction:column;gap:17px}.panel-heading{height:49px;padding:0 15px}.panel-heading h2{font-size:12px}.panel-heading h2 span{display:inline;font-size:6px;letter-spacing:1px;margin-left:9px}.status-pill{font-size:8px}.shop-scene{min-height:0;aspect-ratio:1000 / 490}.scene-note{top:12px;left:12px;font-size:7px;padding:5px 8px}.scene-note .icon{width:10px;height:10px}.shop-clock{padding:12px 15px}.shop-clock small{display:inline;font-size:7px}.shop-clock b{font-size:13px}.oven-strip{min-height:63px}.oven-label{display:flex}.oven-label>.icon{display:block;width:20px;height:20px}.oven-label strong{font-size:9px}.oven-label span{font-size:7px}.oven-empty{font-size:8px}.oven-job>span{font-size:8px}.oven-job b{font-size:9px}.today-column{display:grid;grid-template-columns:1.25fr 1fr;gap:12px}.order-card{padding-bottom:12px}.order-card .panel-heading{height:40px;padding:0 12px}.order-card .panel-heading h2{font-size:10px}.order-card .panel-heading>.icon{width:14px}.order-paper{margin:4px 12px 0;padding:15px 10px 10px}.order-top .handwritten{display:none}.order-paper h3{font-size:13px;margin-top:9px}.order-paper>p{font-size:7px;margin-top:4px;line-height:1.7}.order-product{margin:8px 0;gap:4px}.order-product .pastry{width:47px;height:38px}.order-product strong{font-size:9px}.order-product div>span{font-size:7px;margin-top:5px}.order-reward{padding:7px 0;margin-bottom:8px}.order-reward>span{font-size:8px}.order-reward b{font-size:17px}.order-progress{font-size:7px}.order-card>.button{margin:9px 12px 0;width:calc(100% - 24px);min-height:31px;font-size:9px;padding:6px;gap:5px}.order-card>.button .icon{width:13px;height:13px}.daily-note{padding:19px 14px}.daily-note>span{font-size:8px;gap:4px}.daily-note p{font-size:13px;line-height:2;margin-top:20px}.daily-note small{font-size:7px}.section-heading{margin-top:24px;gap:10px}.section-heading h2{font-size:13px}.section-heading p{font-size:9px}.menu-tools{gap:10px;flex-wrap:wrap;justify-content:flex-end}.discount-button{font-size:8px}.menu-tools>.text-button{font-size:8px;padding:4px 0}.menu-tools>.text-button .icon{width:12px;height:12px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.product-art{height:128px}.product-art .pastry{width:150px;height:120px}.product-tag{font-size:7px;left:9px;top:9px;padding:3px 5px}.stock-count{font-size:7px;right:8px;bottom:8px;padding:4px 6px}.stock-count b{font-size:10px}.product-body{padding:12px}.product-title h3{font-size:12px}.product-title div>span{font-size:7px;letter-spacing:0}.product-title>strong{font-size:20px}.product-body>p{font-size:8px;line-height:1.9;min-height:30px}.product-meta{font-size:7px;margin:11px 0}.product-meta .icon{width:9px;height:9px}.bake-button{font-size:9px;min-height:33px;padding:7px 9px;gap:5px}.bake-button .icon{width:13px;height:13px}.bake-button>span{font-size:9px}.section-intro{display:block;margin-bottom:20px}.section-intro p{font-size:10px;margin-top:12px}.tag{font-size:9px}.research-button{font-size:8px;padding:8px 5px;min-height:34px;gap:4px}.research-button .icon{width:11px;height:11px}.recipe-profit{font-size:7px;gap:4px}.growth-banner{padding:24px;gap:10px}.growth-banner h2{font-size:22px}.growth-banner p{font-size:10px}.growth-banner>.icon{width:45px;height:65px;margin-right:0;flex-shrink:0}.upgrade-grid{gap:12px}.upgrade-card{padding:18px 15px}.upgrade-heading{align-items:flex-start;gap:5px;flex-direction:column}.upgrade-heading h3{font-size:13px}.upgrade-heading>span{font-size:8px;margin-top:5px}.upgrade-card>p{font-size:10px;min-height:54px}.upgrade-icon{width:42px;height:42px;margin-bottom:15px}.upgrade-icon .icon{width:22px;height:22px}.upgrade-card .button{font-size:9px;padding:8px;min-height:35px}.upgrade-card .button .icon{width:12px;height:12px}.upgrade-card .button>span{gap:4px}.upgrade-dots{margin:15px 0}.decoration{padding:22px}.decoration h2{font-size:22px}.theme-options{justify-content:space-around;width:100%;gap:10px;margin-top:8px}.theme-button{font-size:9px}.theme-swatch{width:36px;height:36px}.regulars .section-heading{align-items:flex-start}.regulars .tag{font-size:7px;padding:7px}.regulars .tag .icon{width:11px;height:11px}.regular-card{padding:23px 20px;gap:20px}.avatar{width:53px;height:62px;font-size:26px}.regular-card p{font-size:12px}.friendship>span{font-size:8px}.journal-columns{grid-template-columns:1fr;gap:18px}.history-panel{grid-row:1}.history-row{padding:16px 20px}.empty-state{padding:32px 20px}.feed-item{padding:15px}.feed-item p{font-size:10px}footer{margin-top:26px;font-size:7px;gap:7px;flex-wrap:wrap;padding-bottom:21px}footer>span:last-child{width:100%;justify-content:center;margin-top:4px;font-size:7px;color:#adb29a}#toast{left:50%;bottom:83px;font-size:11px;padding:12px 16px;max-width:calc(100vw - 30px)}.modal-overlay{padding:16px}.modal{max-height:calc(100dvh - 32px);padding:30px 24px}.modal h2{font-size:23px}.summary-main strong{font-size:39px}.summary-ledger{font-size:10px}.modal .eyebrow{font-size:8px;letter-spacing:1px}}
+@media(max-width:380px){main{padding:0 13px}h1{font-size:20px;letter-spacing:0}.heading-action .button{font-size:9px;padding:8px}.metric{padding:0 10px}.metric strong{font-size:21px}.product-art{height:115px}.product-art .pastry{width:137px;height:110px}.product-body{padding:10px}.product-title h3{font-size:11px}.product-title>strong{font-size:18px}.product-meta{font-size:6px}.oven-label{display:none}.today-column{grid-template-columns:1.35fr 1fr}.daily-note{padding:15px 11px}.daily-note p{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.walker{display:none}}
+/* Keep timer updates calm, and make the first bake reachable from the shop. */
+.page-content{animation:none}.oven-empty:hover:not(:disabled){background:#e9eddf;color:#69845e;border-color:#cbd7bc}
+h1{text-wrap:balance}.shop-scene:not(.is-open) .rain-overlay{animation-play-state:paused}
+
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="modal-root"></div>
+  <noscript>请开启浏览器 JavaScript，开始经营你的烘焙店。</noscript>
+  <script>
+(() => {
+const PRODUCTS = [
+  { id: 'roll', name: '奶油餐包', en: 'Butter roll', price: 10, cost: 18, time: 7, description: '柔软蓬松，藏着一小块黄油的香气。', unlock: 0, research: 0, audience: '学生喜爱' },
+  { id: 'toast', name: '牛奶吐司', en: 'Milk toast', price: 16, cost: 30, time: 10, description: '烤得金黄的日常，带回家慢慢分享。', unlock: 0, research: 0, audience: '街坊喜爱' },
+  { id: 'croissant', name: '黄油可颂', en: 'Croissant', price: 22, cost: 48, time: 13, description: '层层酥香，一口就能听见清脆。', unlock: 0, research: 0, audience: '上班族喜爱' },
+  { id: 'cinnamon', name: '肉桂卷', en: 'Cinnamon roll', price: 25, cost: 54, time: 12, description: '温暖的肉桂香，和午后很相配。', unlock: 28, research: 100, audience: '甜点客喜爱' },
+  { id: 'cake', name: '草莓小蛋糕', en: 'Strawberry cake', price: 36, cost: 78, time: 16, description: '把一点点庆祝，放进平凡的日子。', unlock: 42, research: 180, audience: '庆祝首选' },
+  { id: 'tart', name: '柠檬塔', en: 'Lemon tart', price: 32, cost: 66, time: 14, description: '酸甜恰到好处，像阳光落在舌尖。', unlock: 58, research: 240, audience: '甜点客喜爱' },
+];
+const WEATHER = [
+  { name: '晴朗', label: '阳光正好，街上热闹了些', icon: 'sun', interval: 3, preference: 'roll' },
+  { name: '小雨', label: '雨天客人少些，热面包更受欢迎', icon: 'rain', interval: 5, preference: 'toast' },
+  { name: '多云', label: '适合散步，也适合一份甜点', icon: 'cloud', interval: 4, preference: 'croissant' },
+];
+const UPGRADES = [
+  { id: 'oven', name: '烤箱扩容', description: '每级多一个烤位，最多同时烤 3 炉。', price: 180, max: 2, icon: 'oven' },
+  { id: 'counter', name: '大一点的展示柜', description: '每级增加 18 个陈列位，容得下更多美味。', price: 120, max: 3, icon: 'shop' },
+  { id: 'sign', name: '街角新招牌', description: '每级吸引更多客人，提升进店频率。', price: 160, max: 2, icon: 'sparkles' },
+  { id: 'helper', name: '请一位烘焙帮手', description: '烘焙耗时减少 35%，每日工资 ¥25。', price: 220, max: 1, icon: 'people' },
+];
+const REGULARS = [
+  { id: 'lin', name: '林奶奶', initial: '林', favorite: 'toast', tag: '总爱买一份牛奶吐司', color: '#d7b6a5', stories: ['“这香味，让我想起以前家门口的店。”', '“老伴说，明天还想吃你家的吐司。”', '“以后周末的早餐，就拜托你啦。”'] },
+  { id: 'yu', name: '小雨', initial: '雨', favorite: 'roll', tag: '放学路过的学生', color: '#a7b7aa', stories: ['“放学后最期待的，就是这里的面包！”', '“我把这家店推荐给同学啦。”', '“等妈妈生日，我想来订一个蛋糕。”'] },
+];
+
+const getProduct = id => PRODUCTS.find(p => p.id === id);
+const capacity = s => 36 + s.upgrades.counter * 18;
+const occupied = s => Object.values(s.stock).reduce((a, b) => a + b, 0) + s.jobs.reduce((a, j) => a + j.quantity, 0);
+const weatherFor = s => WEATHER[(s.day - 1) % WEATHER.length];
+const reputationLabel = s => s.reputation >= 70 ? '社区人气名店' : s.reputation >= 42 ? '街坊口碑小店' : s.reputation >= 28 ? '渐有名气' : '街角新店';
+const dailyTarget = s => Math.min(300, 140 + (s.day - 1) * 20);
+const upgradeCost = (s, u) => u.price * (s.upgrades[u.id] + 1);
+const dailyStats = () => ({ revenue: 0, expense: 0, sold: 0, served: 0, missed: 0, waste: 0, bonus: 0 });
+
+function createGame(seed = Date.now() % 2147483647 || 7) {
+  return {
+    version: 1, day: 1, cash: 360, reputation: 20, phase: 'prep', minute: 540,
+    stock: Object.fromEntries(PRODUCTS.map(p => [p.id, 0])), jobs: [],
+    unlocked: ['roll', 'toast', 'croissant'], upgrades: { oven: 0, counter: 0, sign: 0, helper: 0 },
+    affection: { lin: 0, yu: 0 }, stats: dailyStats(), totalRevenue: 0, totalServed: 0,
+    orderDone: false, discount: false, paused: false, rng: seed, elapsed: 0, nextId: 1,
+    events: [], history: [], theme: 'sage', lastSummary: null,
+  };
+}
+
+function random(s) {
+  s.rng = (s.rng * 16807) % 2147483647;
+  return s.rng / 2147483647;
+}
+function event(s, text, type = 'note') {
+  s.events.unshift({ id: s.nextId++, text, type, minute: s.minute, day: s.day });
+  s.events = s.events.slice(0, 30);
+}
+function income(s, amount) {
+  s.cash += amount; s.stats.revenue += amount; s.totalRevenue += amount;
+}
+function rep(s, n) { s.reputation = Math.max(0, Math.min(100, s.reputation + n)); }
+
+function bake(s, id) {
+  const p = getProduct(id);
+  if (!p || !s.unlocked.includes(id)) return { error: '这款配方还没有解锁。' };
+  if (s.phase === 'closed') return { error: '今天已打烊，明天再烤吧。' };
+  if (s.jobs.length >= 1 + s.upgrades.oven) return { error: '烤箱正忙，等这一炉出炉再来。' };
+  if (occupied(s) + 6 > capacity(s)) return { error: '展示柜快满了，卖出一些或升级展示柜吧。' };
+  if (s.cash < p.cost) return { error: '零钱不够，可以先出售现有面包，或接一份街坊订单。' };
+  s.cash -= p.cost; s.stats.expense += p.cost;
+  const duration = Math.ceil(p.time * (s.upgrades.helper ? 0.65 : 1));
+  s.jobs.push({ id: s.nextId++, product: id, quantity: 6, remaining: duration, duration });
+  event(s, `一炉${p.name}进烤箱啦，期待热乎乎的出炉。`, 'bake');
+  return { ok: true };
+}
+
+function openShop(s) {
+  if (s.phase !== 'prep') return { error: '现在不能开门。' };
+  if (!occupied(s)) return { error: '先烤一炉面包，再迎接今天的客人吧。' };
+  s.phase = 'open'; s.elapsed = 0;
+  event(s, '翻开营业牌，新的一天开始了。', 'open');
+  return { ok: true };
+}
+
+function customer(s) {
+  const regular = random(s) < 0.3 ? REGULARS[Math.floor(random(s) * REGULARS.length)] : null;
+  const audiences = [
+    { name: '学生', favorites: ['roll', 'toast'] },
+    { name: '上班族', favorites: ['croissant', 'toast'] },
+    { name: '甜点爱好者', favorites: ['cake', 'tart', 'cinnamon', 'croissant'] },
+  ];
+  const audience = audiences[Math.floor(random(s) * audiences.length)];
+  const favorites = regular ? [regular.favorite] : random(s) < 0.35 ? [weatherFor(s).preference, ...audience.favorites] : audience.favorites;
+  const stocked = PRODUCTS.filter(p => s.stock[p.id] > 0);
+  let chosen = favorites.map(getProduct).find(p => p && s.stock[p.id] > 0);
+  if (!chosen && stocked.length && random(s) < (s.discount ? 0.95 : 0.65)) chosen = stocked[Math.floor(random(s) * stocked.length)];
+  if (!chosen) {
+    s.stats.missed++;
+    if (s.stats.missed % 3 === 0) rep(s, -1);
+    const wanted = getProduct(favorites[0]);
+    event(s, `${regular?.name || audience.name}没买到${wanted.name}，有些遗憾地离开了。`, 'miss');
+    return;
+  }
+  const quantity = Math.min(s.stock[chosen.id], random(s) < 0.35 ? 2 : 1);
+  const price = Math.round(chosen.price * (s.discount ? 0.8 : 1)) * quantity;
+  s.stock[chosen.id] -= quantity; income(s, price);
+  s.stats.sold += quantity; s.stats.served++; s.totalServed++;
+  if (s.stats.served % 3 === 0) rep(s, 1);
+  if (regular && chosen.id === regular.favorite) {
+    s.affection[regular.id]++;
+    const level = Math.min(2, Math.floor((s.affection[regular.id] - 1) / 4));
+    event(s, `${regular.name}买了${chosen.name}。${regular.stories[level]}`, 'regular');
+  } else event(s, `${regular?.name || audience.name}带走了 ${quantity} 份${chosen.name}，收入 ¥${price}。`, 'sale');
+}
+
+function advance(s, seconds = 1) {
+  if (s.paused || s.phase === 'closed') return;
+  for (let i = 0; i < seconds; i++) {
+    for (const j of s.jobs) j.remaining--;
+    const finished = s.jobs.filter(j => j.remaining <= 0);
+    for (const j of finished) {
+      s.stock[j.product] += j.quantity;
+      event(s, `${getProduct(j.product).name}出炉！${j.quantity} 份新鲜上架。`, 'ready');
+    }
+    s.jobs = s.jobs.filter(j => j.remaining > 0);
+    if (s.phase === 'open') {
+      s.minute += 5; s.elapsed++;
+      const interval = Math.max(2, weatherFor(s).interval - s.upgrades.sign - (s.day % 7 === 0 ? 1 : 0));
+      if (s.elapsed % interval === 0) customer(s);
+      if (s.minute >= 1080) { closeShop(s); break; }
+    }
+  }
+}
+
+function orderFor(s) {
+  const items = ['roll', 'toast', 'croissant'];
+  const product = items[(s.day - 1) % items.length];
+  const p = getProduct(product);
+  return { product, quantity: 6, reward: p.price * 6 + 28, name: ['小雨的课间分享', '林奶奶的早餐篮', '街坊办公室茶歇'][(s.day - 1) % 3] };
+}
+
+function fulfillOrder(s) {
+  if (s.phase === 'closed') return { error: '今天打烊了，明天再来接单吧。' };
+  if (s.orderDone) return { error: '今天的预订已经完成啦。' };
+  const o = orderFor(s);
+  if (s.stock[o.product] < o.quantity) return { error: `还需要 ${o.quantity - s.stock[o.product]} 份${getProduct(o.product).name}，出炉后再交付吧。` };
+  s.stock[o.product] -= o.quantity; s.orderDone = true;
+  income(s, o.reward); s.stats.sold += o.quantity; rep(s, 3);
+  const id = s.day % 3 === 1 ? 'yu' : 'lin'; s.affection[id]++;
+  event(s, `完成「${o.name}」，收到 ¥${o.reward} 和一份暖心的感谢。`, 'regular');
+  return { ok: true };
+}
+
+function buyUpgrade(s, id) {
+  const u = UPGRADES.find(u => u.id === id);
+  if (!u || s.upgrades[id] >= u.max) return { error: '这项升级已经完成了。' };
+  const cost = upgradeCost(s, u);
+  if (s.cash < cost) return { error: `还差 ¥${cost - s.cash}，再经营一会儿吧。` };
+  s.cash -= cost; s.upgrades[id]++;
+  event(s, `${u.name}升级完成，小店又向前了一步。`, 'upgrade');
+  return { ok: true };
+}
+
+function research(s, id) {
+  const p = getProduct(id);
+  if (!p || s.unlocked.includes(id)) return { error: '已经掌握这份配方啦。' };
+  if (s.reputation < p.unlock) return { error: `口碑达到 ${p.unlock} 后，可以研发这款新品。` };
+  if (s.cash < p.research) return { error: `研发还需要 ¥${p.research - s.cash}。` };
+  s.cash -= p.research; s.unlocked.push(id);
+  event(s, `${p.name}研发成功！现在可以加入今日菜单了。`, 'upgrade');
+  return { ok: true };
+}
+
+function closeShop(s) {
+  if (s.phase !== 'open') return { error: '还没有开始营业。' };
+  // Finish paid batches before clearance, so no ingredients or cash vanish silently.
+  for (const j of s.jobs) s.stock[j.product] += j.quantity;
+  s.jobs = [];
+  const remaining = Object.values(s.stock).reduce((a, b) => a + b, 0);
+  const clearance = PRODUCTS.reduce((total, p) => total + s.stock[p.id] * Math.floor(p.price * 0.25), 0);
+  const expenses = 8 + (s.upgrades.helper ? 25 : 0);
+  const goalMet = s.stats.revenue >= dailyTarget(s);
+  s.stats.bonus = goalMet ? 40 : 0;
+  s.cash += clearance + s.stats.bonus - expenses;
+  s.stats.expense += expenses;
+  s.stats.waste = remaining;
+  s.stock = Object.fromEntries(PRODUCTS.map(p => [p.id, 0]));
+  s.phase = 'closed'; s.minute = Math.min(s.minute, 1080); s.paused = false;
+  if (goalMet) rep(s, 2);
+  s.lastSummary = { ...s.stats, day: s.day, clearance, profit: s.stats.revenue + clearance + s.stats.bonus - s.stats.expense, goalMet, early: s.minute < 1080 };
+  s.history.unshift(s.lastSummary); s.history = s.history.slice(0, 30);
+  event(s, `今天打烊啦。服务 ${s.stats.served} 位客人，明天也要热气腾腾。`, 'close');
+  return { ok: true };
+}
+
+function nextDay(s) {
+  if (s.phase !== 'closed') return { error: '先完成今天的营业吧。' };
+  s.day++; s.phase = 'prep'; s.minute = 540; s.elapsed = 0;
+  s.stats = dailyStats(); s.orderDone = false; s.discount = false; s.lastSummary = null;
+  // A small, visible community advance prevents a save from becoming unplayable.
+  if (s.cash < 18) {
+    const aid = 60 - s.cash; s.cash = 60;
+    event(s, `街坊互助金送来 ¥${aid}，先烤一炉面包重新出发吧。`, 'regular');
+  }
+  event(s, `第 ${s.day} 天，${weatherFor(s).name}。${weatherFor(s).label}。`, 'note');
+  return { ok: true };
+}
+
+function validateSave(raw) {
+  if (!raw || raw.version !== 1) return false;
+  const numeric = ['day', 'cash', 'reputation', 'minute', 'rng', 'elapsed', 'nextId', 'totalRevenue', 'totalServed'];
+  if (!numeric.every(k => Number.isFinite(raw[k]))) return false;
+  if (!Number.isInteger(raw.day) || raw.day < 1 || raw.reputation < 0 || raw.reputation > 100 || !Number.isInteger(raw.rng) || raw.rng <= 0 || raw.rng >= 2147483647 || raw.minute < 540 || raw.minute > 1080) return false;
+  if (!['prep', 'open', 'closed'].includes(raw.phase) || !['sage', 'rose', 'sand'].includes(raw.theme)) return false;
+  if (!Array.isArray(raw.unlocked) || !['roll', 'toast', 'croissant'].every(id => raw.unlocked.includes(id)) || raw.unlocked.some(id => !getProduct(id))) return false;
+  if (!raw.stock || !PRODUCTS.every(p => Number.isInteger(raw.stock[p.id]) && raw.stock[p.id] >= 0)) return false;
+  if (!raw.upgrades || !UPGRADES.every(u => Number.isInteger(raw.upgrades[u.id]) && raw.upgrades[u.id] >= 0 && raw.upgrades[u.id] <= u.max)) return false;
+  if (!raw.affection || !REGULARS.every(r => Number.isInteger(raw.affection[r.id]) && raw.affection[r.id] >= 0)) return false;
+  if (!raw.stats || !Object.keys(dailyStats()).every(k => Number.isFinite(raw.stats[k]) && raw.stats[k] >= 0)) return false;
+  if (!Array.isArray(raw.jobs) || raw.jobs.length > 3 || raw.jobs.some(j => !getProduct(j.product) || !raw.unlocked.includes(j.product) || j.quantity !== 6 || !Number.isFinite(j.duration) || j.duration <= 0 || !Number.isFinite(j.remaining) || j.remaining <= 0 || j.remaining > j.duration)) return false;
+  if (!Array.isArray(raw.events) || raw.events.length > 30 || raw.events.some(e => typeof e.text !== 'string' || typeof e.type !== 'string' || !Number.isFinite(e.minute) || !Number.isFinite(e.day))) return false;
+  if (!Array.isArray(raw.history) || raw.history.length > 30 || raw.history.some(h => !['day', 'revenue', 'expense', 'clearance', 'bonus', 'profit', 'served', 'missed', 'sold', 'waste'].every(k => Number.isFinite(h[k])))) return false;
+  if (raw.phase === 'closed' && (!raw.lastSummary || !['day', 'revenue', 'expense', 'clearance', 'bonus', 'profit', 'served', 'missed', 'sold', 'waste'].every(k => Number.isFinite(raw.lastSummary[k])))) return false;
+  return typeof raw.paused === 'boolean' && typeof raw.discount === 'boolean' && typeof raw.orderDone === 'boolean';
+}
+
+
+function pastry(id, className = '') {
+  const drawings = {
+    roll: `<ellipse cx="100" cy="126" rx="60" ry="10" fill="#b18a52" opacity=".13"/><path d="M37 103c-3-30 16-57 45-57 10-12 42-7 47 5 28 1 44 35 34 59-9 22-115 25-126-7Z" fill="url(#dough)"/><path d="M83 48c-9 17-15 38-12 61M126 51c-6 16-9 37-6 54" stroke="#f9daa0" stroke-width="6" stroke-linecap="round"/><path d="M45 107c36 12 79 12 113-2" stroke="#b57536" stroke-width="2" opacity=".5"/>`,
+    toast: `<ellipse cx="100" cy="134" rx="59" ry="8" fill="#b18a52" opacity=".13"/><path d="M49 67c-7-33 13-47 34-38 11-10 32-10 42 1 26-7 41 14 30 37v62H49Z" fill="#ad6e37"/><path d="M55 67c-7-27 12-39 29-30 13-10 28-9 40 1 20-8 33 11 23 30v55H55Z" fill="url(#dough)"/><path d="M66 69c-8-17 5-27 20-20 12-8 23-8 35 1 15-6 25 6 17 20v42H66Z" fill="#f4ddb0"/><path d="M85 58v48M104 57v48M123 62v43" stroke="#e9cb95" stroke-width="2" stroke-dasharray="2 6"/>`,
+    croissant: `<ellipse cx="100" cy="128" rx="66" ry="8" fill="#b18a52" opacity=".13"/><path d="M37 117c-19-25 3-63 27-65 11-26 60-28 74 1 30 7 43 41 26 62l-18-16c-5-11-12-10-18-5-15 15-40 14-55-1-8-6-15 3-17 10Z" fill="url(#dough)"/><path d="m65 54 9 39m17-52 2 59m22-59-8 60m29-47-15 39M45 75l18 17m92-18-16 17" stroke="#aa632f" stroke-width="4" stroke-linecap="round"/><path d="m68 61 7 22m17-34 1 42m21-42-5 41m24-28-9 21" stroke="#f7d28b" stroke-width="4" stroke-linecap="round"/>`,
+    cinnamon: `<ellipse cx="101" cy="130" rx="61" ry="8" fill="#b18a52" opacity=".13"/><path d="M43 75h114v42c-13 29-101 26-114-1Z" fill="#ba7843"/><ellipse cx="100" cy="76" rx="57" ry="39" fill="url(#dough)"/><path d="M147 80c-2-47-95-39-95-6s75 37 82 5-55-26-61-10 31 25 40 10-17-14-18-5" stroke="#92532e" stroke-width="6" fill="none" stroke-linecap="round"/><path d="m60 56 3 40 16-42 5 42 17-47 5 46 17-41 3 33 15-23" stroke="#f8e8cb" stroke-width="4" stroke-linecap="round" opacity=".8"/>`,
+    cake: `<ellipse cx="101" cy="133" rx="64" ry="8" fill="#b18a52" opacity=".13"/><path d="m52 72 58-30 49 31v55H52Z" fill="#f0d4b3"/><path d="M52 88h107v14H52Z" fill="#c8776d"/><path d="M52 102h107v9H52Z" fill="#fff0dc"/><path d="m52 70 57-31 50 32v12c-9 13-17-6-27 2s-15-6-25 0-18-5-27 1-20 4-28-2Z" fill="#fff7e8"/><path d="M97 58c-18-17-1-37 10-25 12-14 29 4 10 25-7 5-14 5-20 0Z" fill="#c66f5a"/><path d="m107 34-2-12m2 12-9-7m9 7 10-9" stroke="#718758" stroke-width="3" stroke-linecap="round"/><path d="m100 44 2 2m12-6 2 2m-7 10 1 2" stroke="#f5d298" stroke-width="2"/>`,
+    tart: `<ellipse cx="100" cy="130" rx="63" ry="8" fill="#b18a52" opacity=".13"/><path d="m41 86 9 34c17 21 84 22 102-1l8-34Z" fill="#b78348"/><path d="m51 96 7 25m8-21 5 27m10-27 2 30m15-29v30m15-32-2 31m16-34-4 29m17-34-5 27" stroke="#e3b772" stroke-width="5"/><ellipse cx="100" cy="85" rx="59" ry="34" fill="#e7ba6a"/><ellipse cx="100" cy="83" rx="49" ry="27" fill="#f3dc86"/><path d="M85 75c-1-15 15-17 15-29 0 12 20 17 17 30Z" fill="#fff6db"/><path d="m125 72 4-25c18 4 25 15 24 30Z" fill="#f6e9a4"/><path d="m129 47 24 30-28-5Z" stroke="#d2b95b" stroke-width="2"/><path d="M93 52c-12-1-16-9-16-9 13-4 16 9 16 9Z" fill="#819b63"/>`,
+  };
+  return `<svg class="pastry ${className}" viewBox="0 0 200 160" aria-hidden="true"><defs><linearGradient id="dough" x1="0" y1="0" x2=".25" y2="1"><stop stop-color="#edc184"/><stop offset=".5" stop-color="#dca05c"/><stop offset="1" stop-color="#bf7e3e"/></linearGradient></defs>${drawings[id] || drawings.roll}</svg>`;
+}
+const paths = {
+  wheat: '<path d="m7 21 11-18M12 12C5 13 4 7 4 7c7-1 8 5 8 5Zm4-6C10 6 11 1 11 1c5 0 5 5 5 5Zm-7 12c-7 1-8-5-8-5 7-2 8 5 8 5Zm4-6c1-7 7-7 7-7 1 6-7 7-7 7Zm-4 6c3-7 9-6 9-6-1 6-9 6-9 6Z"/>',
+  shop: '<path d="M3 10v11h18V10M2 10l3-7h14l3 7M8 3l-1 7m9-7 1 7M2 10c1 3 4 3 5 0 1 3 4 3 5 0 1 3 4 3 5 0 1 3 4 3 5 0M9 21v-7h6v7"/>',
+  book: '<path d="M12 5v16M12 5C9 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-2-1-7-2-10 1Z"/>',
+  chart: '<path d="M4 3v18h17M8 16v-4m5 4V7m5 9V4"/>',
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 1v2m0 18v2M1 12h2m18 0h2M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/>',
+  cloud: '<path d="M6 18a5 5 0 1 1 1-10 7 7 0 0 1 13 3 4 4 0 0 1-1 7Z"/>',
+  rain: '<path d="M6 15a5 5 0 1 1 1-10 7 7 0 0 1 13 3 4 4 0 0 1-1 7ZM8 19l-1 3m6-3-1 3m6-3-1 3"/>',
+  coin: '<circle cx="12" cy="12" r="9"/><path d="M15 8h-4a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4H9m3-10v12"/>',
+  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  check: '<path d="m5 12 4 4L20 5"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
+  oven: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 8h18M7 5.5h.1m4 0h.1M7 12h10v6H7Z"/>',
+  people: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m1-17a3 3 0 0 1 0 6m3 11v-3a6 6 0 0 0-3-5"/>',
+  sparkles: '<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Zm7-2v4m-2-2h4"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
+  play: '<path d="m8 4 12 8-12 8Z"/>',
+  leaf: '<path d="M20 3C7 2 0 10 6 17s16-1 14-14ZM5 20l10-11"/>',
+  settings: '<path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="16" cy="17" r="3"/>',
+  close: '<path d="m6 6 12 12M6 18 18 6"/>',
+  lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4m-4 5v2"/>',
+  gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13m0-13C3 9 4 0 8 3l4 5Zm0 0c9 1 8-8 4-5l-4 5Z"/>',
+  journal: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8m-8 4h8m-8 4h4M2 7h4M2 12h4M2 17h4"/>',
+};
+function icon(name, className = '') { return `<svg class="icon ${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.sparkles}</svg>`; }
+
+
+
+const SAVE_KEY = 'maijian-bakery-v1';
+let storageOK = true, loadMessage = '', state = load(), view = 'shop', modal = null, toastTimer;
+const app = document.querySelector('#app');
+const modalRoot = document.querySelector('#modal-root');
+const money = n => `¥${Math.round(n).toLocaleString('zh-CN')}`;
+const esc = text => String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const time = n => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`;
+const action = (name, label, cls = 'button', extra = '') => `<button class="${cls}" data-action="${name}" ${extra}>${label}</button>`;
+
+function load() {
+  try {
+    const text = localStorage.getItem(SAVE_KEY);
+    if (text) {
+      const raw = JSON.parse(text);
+      if (validateSave(raw)) return raw;
+      localStorage.setItem(`${SAVE_KEY}-backup`, text);
+      loadMessage = '旧存档格式异常，已保留备份，并为你开启新小店。';
+    }
+  } catch { loadMessage = '无法读取存档，已开启新小店。请在设置中导出备份。'; }
+  return createGame();
+}
+function save() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); storageOK = true; }
+  catch { if (storageOK) toast('浏览器存储不可用，请通过设置导出存档。'); storageOK = false; }
+}
+function toast(message) {
+  const el = document.querySelector('#toast');
+  el.textContent = message; el.classList.add('visible');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('visible'), 3800);
+}
+function run(fn, success) {
+  const result = fn();
+  if (result?.error) toast(result.error);
+  else if (success) toast(success);
+  save(); render();
+}
+
+function sidebar() {
+  return `<aside class="sidebar">
+    <a class="brand" href="#" data-action="shop" aria-label="麦间首页"><span class="brand-mark">${icon('wheat')}</span><span class="brand-name">麦间<span>MAI JIAN BAKERY</span></span></a>
+    <div class="sidebar-label">一间小店，一点理想</div>
+    <nav aria-label="主导航">${[
+      ['shop', 'shop', '我的小店', '01'], ['recipes', 'book', '烘焙食谱', '02'], ['upgrades', 'leaf', '小店成长', '03'], ['journal', 'journal', '街角日记', '04'],
+    ].map(([id, glyph, label, no]) => action(id, `${icon(glyph)}<span>${label}</span><small>${no}</small>`, `nav-item ${view === id ? 'active' : ''}`, `aria-current="${view === id ? 'page' : 'false'}"`)).join('')}</nav>
+    <div class="sidebar-bottom"><div class="little-note">${icon('wheat')}<p>面包会有的，<br>喜欢的生活也是。</p><span>A LITTLE BETTER, EVERY DAY</span></div>
+    <div class="save-status">${icon(storageOK ? 'check' : 'close')}<span>${storageOK ? '进度已自动保存' : '存档不可用 · 请导出'}</span></div>
+    ${action('settings', `${icon('settings')} 偏好与存档`, 'settings-button')}</div>
+  </aside>`;
+}
+
+function header() {
+  const names = { shop: ['经营手记', '小小的店，热腾腾的日常。', '揉进一点耐心，等待美好出炉。'], recipes: ['风味收藏', '把喜欢的味道，留在食谱里。', '从一只餐包，到属于你的招牌。'], upgrades: ['慢慢成长', '让小店，变成理想的模样。', '每一份努力，都有看得见的回响。'], journal: ['街角来信', '面包之外，还有日常的故事。', '记住来过的人，也记住走过的每一天。'] };
+  const [eyebrow, title, sub] = names[view];
+  return `<header class="topbar"><div class="breadcrumb">麦间烘焙 <span>/</span> ${eyebrow}</div><div class="topbar-right"><span class="day-badge">DAY ${String(state.day).padStart(2, '0')}</span><span class="day-label">${state.day % 7 === 0 ? '周末时光' : '又是美好的一天'}</span>${action('pause', icon(state.paused ? 'play' : 'pause'), `icon-button ${state.paused ? 'selected' : ''}`, `aria-label="${state.paused ? '继续游戏' : '暂停游戏'}" title="${state.paused ? '继续' : '暂停'}"`)}${action('settings', icon('settings'), 'icon-button', 'aria-label="打开设置"')}</div></header>
+  <div class="page-heading"><div><p class="eyebrow">${eyebrow} <span>THE CORNER BAKERY</span></p><h1>${title}</h1><p class="subtitle">${sub}</p></div><div class="heading-action">${state.phase === 'prep' ? action('open', `${icon('shop')} 开始营业 ${icon('arrow')}`, 'button primary') : state.phase === 'open' ? action('close-confirm', `${icon('shop')} 提前打烊`, 'button outline') : action('next', `开启新一天 ${icon('arrow')}`, 'button primary')}<span>${state.paused ? '时间已暂停，慢慢安排吧' : state.phase === 'prep' ? '备好面包，就开门迎客吧' : state.phase === 'open' ? '欢迎光临，今日好好营业' : '辛苦啦，明天也值得期待'}</span></div></div>`;
+}
+
+function metrics() {
+  const w = weatherFor(state);
+  return `<section class="metrics" aria-label="经营概况">
+    <article class="metric"><span class="metric-icon">${icon('coin')}</span><div><span class="metric-label">小店零钱</span><strong data-testid="cash">${money(state.cash)}</strong><small>把每一点积累，变成喜欢的样子</small></div></article>
+    <article class="metric"><span class="metric-icon terracotta">${icon('chart')}</span><div><span class="metric-label">今日营业额</span><strong>${money(state.stats.revenue)}<em>/ ${money(dailyTarget(state))}</em></strong><small>达成今日心愿，额外奖励 ¥40</small></div></article>
+    <article class="metric"><span class="metric-icon gold">${icon('heart')}</span><div><span class="metric-label">街坊口碑</span><strong>${state.reputation}<em>/ 100</em><span class="rep-tag">${reputationLabel(state)}</span></strong><small>${state.totalServed} 位客人的日常，与你有了交集</small></div></article>
+    <article class="metric weather"><span class="metric-icon">${icon(w.icon)}</span><div><span class="metric-label">今日天气</span><strong>${w.name}<em>第 ${state.day} 天</em></strong><small>${w.label}</small></div></article>
+  </section>`;
+}
+
+function shopScene() {
+  const stage = state.phase === 'prep' ? '准备中' : state.phase === 'open' ? '营业中' : '已打烊';
+  const jobs = state.jobs;
+  return `<section class="scene-card panel"><div class="panel-heading"><h2>街角的麦间 <span>YOUR LITTLE BAKERY</span></h2><span class="status-pill ${state.phase}"><i></i>${stage}</span></div>
+    <div class="shop-scene theme-${state.theme} ${state.phase === 'open' && !state.paused ? 'is-open' : ''} ${weatherFor(state).icon === 'rain' ? 'rainy' : ''}">
+      <img class="storefront" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDQ5MCIgZmlsbD0ibm9uZSI+CjxkZWZzPgogIDxsaW5lYXJHcmFkaWVudCBpZD0ic2t5IiB4Mj0iMCIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlN2U5ZGUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmMmVjZGYiLz48L2xpbmVhckdyYWRpZW50PgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ2xhc3MiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2E5YmJiMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q5ZDliYyIvPjwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJicmVhZCIgeDI9IjAuNCIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlZmM2N2MiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiYTc4M2MiLz48L2xpbmVhckdyYWRpZW50PgogIDxwYXR0ZXJuIGlkPSJicmljayIgd2lkdGg9IjgwIiBoZWlnaHQ9IjM2IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNMCAwSDgwTTAgMzZIODBNNDAgMFYxOE0wIDE4SDgwTTAgMThWMzZNODAgMThWMzYiIHN0cm9rZT0iI2Q4YzliNCIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIuNSIvPjwvcGF0dGVybj4KICA8cGF0dGVybiBpZD0id2FsbCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjI0IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNMCAyNEg2ME0zMCAwVjI0IiBzdHJva2U9IiNlM2Q4YzYiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj4KICA8ZmlsdGVyIGlkPSJzaGFkb3ciPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgiLz48L2ZpbHRlcj4KICA8ZyBpZD0ibG9hZiI+PHJlY3Qgd2lkdGg9IjM4IiBoZWlnaHQ9IjIzIiByeD0iMTEiIGZpbGw9InVybCgjYnJlYWQpIi8+PHBhdGggZD0ibTExIDQtMyAxMG0xNC0xMC0zIDEwbTEzLTktMyAxMCIgc3Ryb2tlPSIjZjhkZTljIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvZz4KICA8ZyBpZD0icGxhbnQiPjxwYXRoIGQ9Ik0tNSAwLTktNDhNMCAwIDgtNjdNNC0xIDI4LTM4IiBzdHJva2U9IiM2OThhNjIiIHN0cm9rZS13aWR0aD0iMyIvPjxlbGxpcHNlIGN4PSItMTMiIGN5PSItMzIiIHJ4PSI3IiByeT0iMTciIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtMTMgLTMyKSIgZmlsbD0iIzdlOTc2YSIvPjxlbGxpcHNlIGN4PSItMiIgY3k9Ii01MSIgcng9IjciIHJ5PSIxNyIgdHJhbnNmb3JtPSJyb3RhdGUoMjggLTIgLTUxKSIgZmlsbD0iIzhiYTQ3OSIvPjxlbGxpcHNlIGN4PSIxMiIgY3k9Ii01NyIgcng9IjciIHJ5PSIxNyIgdHJhbnNmb3JtPSJyb3RhdGUoMjIgMTIgLTU3KSIgZmlsbD0iIzY0ODU1YyIvPjxlbGxpcHNlIGN4PSIyMyIgY3k9Ii0zMSIgcng9IjciIHJ5PSIxNiIgdHJhbnNmb3JtPSJyb3RhdGUoNDAgMjMgLTMxKSIgZmlsbD0iIzkzYTY3NiIvPjxwYXRoIGQ9Ik0tMTgtNUgyM0wxNyAyOUgtMTJaIiBmaWxsPSIjYmE4MDY1Ii8+PHBhdGggZD0iTS0yMC03SDI1VjBILTIwWiIgZmlsbD0iI2Q0OWI3YyIvPjwvZz4KPC9kZWZzPgo8cGF0aCBmaWxsPSJ1cmwoI3NreSkiIGQ9Ik0wIDBIMTAwMFY0OTBIMFoiLz4KPGNpcmNsZSBjeD0iODQxIiBjeT0iNzUiIHI9IjMzIiBmaWxsPSIjZmFmMmNlIiBvcGFjaXR5PSIuOCIvPgo8cGF0aCBkPSJNMCA3NWM0OS00MiA2MSAxNyA5OS0zczU1LTIyIDc2IDNNNzgwIDQyYzIxLTE2IDQyLTE1IDU2IDAiIHN0cm9rZT0iI2ZiZjllZSIgc3Ryb2tlLXdpZHRoPSIxMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjwhLS0gTmVpZ2hib3VyaW5nIGhvdXNlcyAtLT4KPHBhdGggZD0iTTAgMTAySDE3OVY0MDNIMFoiIGZpbGw9IiNlNGQ5YzciLz48cGF0aCBkPSJNMCAxMTBIMTc5VjQwM0gwWiIgZmlsbD0idXJsKCN3YWxsKSIvPjxwYXRoIGQ9Ik00MCAxNjFIMTA3VjI1MEg0MFoiIGZpbGw9IiNkMWM4YjUiLz48cGF0aCBkPSJNNDkgMTY5SDk5VjIzOEg0OVoiIGZpbGw9IiNiOGM0YjYiLz48cGF0aCBkPSJNNzQgMTY5VjIzOE00OSAyMDRIOTkiIHN0cm9rZT0iI2VhZTFjZiIgc3Ryb2tlLXdpZHRoPSI2Ii8+CjxwYXRoIGQ9Ik04MjUgMTI2SDEwMDBWNDA2SDgyNVoiIGZpbGw9IiNlN2RlY2UiLz48cGF0aCBkPSJNODU4IDE2N0g5MTFWMjQ1SDg1OFoiIGZpbGw9IiNiOWMyYjMiLz48cGF0aCBkPSJNODg0IDE2N1YyNDVNODU4IDIwNEg5MTEiIHN0cm9rZT0iI2YwZThkOSIgc3Ryb2tlLXdpZHRoPSI2Ii8+CjwhLS0gc3RyZWV0IC0tPgo8cGF0aCBkPSJNMCA0MDJIMTAwMFY0OTBIMFoiIGZpbGw9IiNkZmQ1YzMiLz48cGF0aCBkPSJNMCA0MThIMTAwMCIgc3Ryb2tlPSIjZjJlY2RmIiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMCA0NTVIMTAwME01MCA0MThWNDU1TTE4NiA0NTVWNDkwTTMxNyA0MThWNDU1TTQ2NiA0NTVWNDkwTTYwMiA0MThWNDU1TTc2NSA0NTVWNDkwTTkwMCA0MThWNDU1IiBzdHJva2U9IiNjZWM0YjIiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxlbGxpcHNlIGN4PSI1MDciIGN5PSI0MTgiIHJ4PSIzMzIiIHJ5PSIxOSIgZmlsbD0iI2E3OTk4MCIgb3BhY2l0eT0iLjE3IiBmaWx0ZXI9InVybCgjc2hhZG93KSIvPgo8IS0tIG1haW4gYnVpbGRpbmcgLS0+CjxyZWN0IHg9IjE5NCIgeT0iNjciIHdpZHRoPSI2MDkiIGhlaWdodD0iMzQ0IiByeD0iMyIgZmlsbD0iI2VlZTVkNCIvPgo8cGF0aCBkPSJNMTk0IDY3SDgwM1Y0MTFIMTk0WiIgZmlsbD0idXJsKCNicmljaykiLz4KPHBhdGggZD0iTTE4MyA2NUg4MTRWODBIMTgzWiIgZmlsbD0iI2M5Yjk5ZCIvPjxwYXRoIGQ9Ik0xOTEgNzlIODA3Vjg1SDE5MVoiIGZpbGw9IiNkZWQxYjkiLz4KPHBhdGggZD0iTTIxMiA5MUg3ODVWMTcySDIxMloiIGZpbGw9IiNmM2VjZGUiLz4KPHRleHQgeD0iNDk5IiB5PSIxMjkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzYjViNGIiIGZvbnQtc2l6ZT0iMzEiIGxldHRlci1zcGFjaW5nPSIxMiIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiPk1BSSBKSUFOPC90ZXh0Pgo8dGV4dCB4PSI0OTkiIHk9IjE1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhmOGE3MiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iNSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiPkJSRUFEIMK3IEJVVFRFUiDCtyBCRVRURVIgREFZUzwvdGV4dD4KPHBhdGggZD0iTTIxNiAxNzlINzgzTDgwNiAyMzVIMTkzWiIgZmlsbD0iIzdjOTU4MCIvPgo8cGF0aCBkPSJNMjQ3IDE3OUgyNzhMMjY2IDIzNUgyMzNaTTMwOCAxNzlIMzM5TDMzNCAyMzVIMzAxWk0zNjkgMTc5SDQwMEw0MDEgMjM1SDM2OFpNNDMxIDE3OUg0NjJMNDY4IDIzNUg0MzVaTTQ5MiAxNzlINTIzTDUzNSAyMzVINTAyWk01NTMgMTc5SDU4NEw2MDIgMjM1SDU2OVpNNjE0IDE3OUg2NDVMNjY5IDIzNUg2MzZaTTY3NSAxNzlINzA2TDczNiAyMzVINzAzWk03MzYgMTc5SDc2N0w4MDMgMjM1SDc3MFoiIGZpbGw9IiNlZmU5ZDgiLz4KPHBhdGggZD0iTTE5MyAyMzVIODA2VjI0NmMtMTMgMTMtMjEgMTMtMzQgMC0xMiAxMy0yMSAxMy0zNCAwLTEyIDEzLTIxIDEzLTM0IDAtMTIgMTMtMjEgMTMtMzQgMC0xMiAxMy0yMSAxMy0zNCAwLTEyIDEzLTIxIDEzLTM0IDAtMTIgMTMtMjEgMTMtMzQgMC0xMiAxMy0yMSAxMy0zNCAwLTEyIDEzLTIxIDEzLTM0IDAtMTIgMTMtMjEgMTMtMzQgMC0xMiAxMy0yMSAxMy0zNCAwLTEyIDEzLTIxIDEzLTM0IDAtMTIgMTMtMjEgMTMtMzQgMC0xMiAxMy0yMSAxMy0zNCAwLTEyIDEzLTIxIDEzLTM0IDAtMTIgMTMtMjEgMTMtMzQgMC0xMiAxMy0yMSAxMy0zNCAwLTEyIDEzLTIxIDEzLTM1IDBaIiBmaWxsPSIjNzE4Yzc2Ii8+CjwhLS0gbGVmdCBiYWtlcnkgd2luZG93IC0tPgo8cmVjdCB4PSIyMjUiIHk9IjI1NCIgd2lkdGg9IjI4NiIgaGVpZ2h0PSIxMzIiIHJ4PSIyIiBmaWxsPSIjNjI3YTY0Ii8+PHJlY3QgeD0iMjM0IiB5PSIyNjEiIHdpZHRoPSIyNjciIGhlaWdodD0iMTE2IiBmaWxsPSJ1cmwoI2dsYXNzKSIvPgo8cGF0aCBkPSJNMjM1IDI2MiA1MDAgMzc3TTQwNyAyNjEgNTAxIDMwMiIgc3Ryb2tlPSIjZTZlZWUwIiBzdHJva2Utd2lkdGg9IjE4IiBvcGFjaXR5PSIuMiIvPgo8cGF0aCBkPSJNMjM3IDM0NUg0OTlWMzc2SDIzN1oiIGZpbGw9IiNjNmE0N2EiLz48cGF0aCBkPSJNMjM5IDM0Nkg0OTdWMzUySDIzOVoiIGZpbGw9IiM5OTdhNTciLz4KPHVzZSBocmVmPSIjbG9hZiIgeD0iMjUzIiB5PSIzMjIiLz48dXNlIGhyZWY9IiNsb2FmIiB4PSIzMDAiIHk9IjMyMiIvPjx1c2UgaHJlZj0iI2xvYWYiIHg9IjM0NyIgeT0iMzIyIi8+CjxwYXRoIGQ9Ik00MDggMzI5YzAtMTAgMTEtMTAgMTEtMTlzMTItOSAxMiAwIDExIDkgMTEgMTkiIGZpbGw9IiNkMjliNTMiLz48cGF0aCBkPSJNNDQ4IDMyOWMwLTEwIDExLTEwIDExLTE5czEyLTkgMTIgMCAxMSA5IDExIDE5IiBmaWxsPSIjZTdiODZkIi8+CjxwYXRoIGQ9Ik0yMzQgMzQwSDUwMU0zNjkgMjYxVjM3NyIgc3Ryb2tlPSIjNjM3YTYzIiBzdHJva2Utd2lkdGg9IjciLz4KPHBhdGggZD0iTTIxNyAzODVINTE5VjM5NEgyMTdaIiBmaWxsPSIjYzliOTlkIi8+CjwhLS0gZG9vciAtLT4KPHBhdGggZD0iTTUzMiAyNTNINjM4VjQwNUg1MzJaIiBmaWxsPSIjNWE3NDYwIi8+PHBhdGggZD0iTTU0MSAyNjJINjI5VjM1OEg1NDFaIiBmaWxsPSJ1cmwoI2dsYXNzKSIvPgo8cGF0aCBkPSJNNTQxIDM2NUg2MjlWMzk3SDU0MVoiIGZpbGw9IiM2Zjg4NzAiLz48cGF0aCBkPSJNNTUwIDM3Mkg2MjBWMzkwSDU1MFoiIHN0cm9rZT0iIzhhOWQ4MiIvPgo8Y2lyY2xlIGN4PSI2MjAiIGN5PSIzNDUiIHI9IjMuNSIgZmlsbD0iI2RmYzM4YiIvPgo8cGF0aCBkPSJNNTczIDI3NyA1ODUgMjY2IDU5NyAyNzciIHN0cm9rZT0iI2U4ZDdiNCIvPgo8cmVjdCB4PSI1NTUiIHk9IjI3NyIgd2lkdGg9IjYwIiBoZWlnaHQ9IjI5IiByeD0iMiIgZmlsbD0iI2YzZTdjOCIgdHJhbnNmb3JtPSJyb3RhdGUoLTQgNTU1IDI3NykiLz48dGV4dCB4PSI1ODUiIHk9IjI5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzVjNzY1ZCIgZm9udC1zaXplPSIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGxldHRlci1zcGFjaW5nPSIyIj5PUEVOPC90ZXh0Pgo8cGF0aCBkPSJNNTI3IDQwNUg2NDVWNDEzSDUyN1oiIGZpbGw9IiNiYmFjOTQiLz4KPCEtLSByaWdodCBkaXNwbGF5IC0tPgo8cmVjdCB4PSI2NTciIHk9IjI1NCIgd2lkdGg9IjExMSIgaGVpZ2h0PSIxMzIiIGZpbGw9IiM2NTdlNjciLz48cmVjdCB4PSI2NjUiIHk9IjI2MiIgd2lkdGg9Ijk1IiBoZWlnaHQ9IjExNSIgZmlsbD0idXJsKCNnbGFzcykiLz4KPHBhdGggZD0iTTY2NiAzMjhINzYwVjM3NUg2NjZaIiBmaWxsPSIjYzdhNjgxIi8+PGVsbGlwc2UgY3g9IjcxMyIgY3k9IjMyNiIgcng9IjM0IiByeT0iNSIgZmlsbD0iI2VkZTVkMSIvPgo8cGF0aCBkPSJNNjg5IDMwNEg3MzhWMzI0SDY4OVoiIGZpbGw9IiNlYWM5YWQiLz48cGF0aCBkPSJNNjg4IDMwM2M1LTkgNDUtOSA1MSAwdjhjLTcgNS05LTQtMTYgMHMtMTAtNS0xNiAwLTEwLTQtMTkgMFoiIGZpbGw9IiNmOWVlZGMiLz48cGF0aCBkPSJNNjk4IDI5N2MtNS0xMyA5LTEzIDgtMk03MTcgMjk0Yy0yLTEzIDExLTEwIDggMk03MjkgMjk4Yy0xLTEyIDExLTkgNiAwIiBmaWxsPSIjYzc3NzYyIi8+CjxwYXRoIGQ9Ik02NTAgMzg1SDc3NVYzOTRINjUwWiIgZmlsbD0iI2M5Yjk5ZCIvPgo8IS0tIGJlbmNoIC0tPgo8cGF0aCBkPSJNNzEgMzQ5SDE2NlYzNzZINzFaIiBmaWxsPSIjYTQ4YzY4Ii8+PHBhdGggZD0iTTY1IDM4MkgxNzNWMzkxSDY1WiIgZmlsbD0iI2E0OGM2OCIvPjxwYXRoIGQ9Ik03NiAzOTFWNDE0TTE2MCAzOTFWNDE0IiBzdHJva2U9IiM2ODc5NjgiIHN0cm9rZS13aWR0aD0iNiIvPgo8cGF0aCBkPSJNNzEgMzYwSDE2Nk03MSAzNzBIMTY2IiBzdHJva2U9IiNjM2FiODgiIHN0cm9rZS13aWR0aD0iMiIvPgo8IS0tIGNoYWxrYm9hcmQgLS0+CjxwYXRoIGQ9Im02NzggNDExIDEyLTYxaDU5bDE1IDYxTTY5MSAzNTNsLTExIDY5TTc0NiAzNTNsMTIgNjkiIHN0cm9rZT0iI2EwODA1NiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTY5MyAzNTNINzQ1TDc1NCA0MDJINjg0WiIgZmlsbD0iIzQzNWQ0YiIvPjx0ZXh0IHg9IjcxOCIgeT0iMzcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2U3ZTNjYiI+ZnJlc2hseTwvdGV4dD48dGV4dCB4PSI3MTkiIHk9IjM4NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNlN2UzY2IiPmJha2VkLjwvdGV4dD48cGF0aCBkPSJNNzAwIDM5M0g3MzkiIHN0cm9rZT0iIzliYWY4YyIvPgo8IS0tIHBsYW50cyAtLT4KPHVzZSBocmVmPSIjcGxhbnQiIHg9IjIyMCIgeT0iMzg4Ii8+PHVzZSBocmVmPSIjcGxhbnQiIHg9Ijc5MSIgeT0iMzkwIi8+PHVzZSBocmVmPSIjcGxhbnQiIHg9Ijg5NCIgeT0iMzg4IiB0cmFuc2Zvcm09InJvdGF0ZSgtNyA4OTQgMzg4KSIvPgo8cGF0aCBkPSJNMzUgMGMxOSAyNyAxMCA0MSAyOSA2OHMyMSAyMiAzMCA0NiIgc3Ryb2tlPSIjOGE4YjY4IiBzdHJva2Utd2lkdGg9IjgiLz4KPGcgZmlsbD0iIzgyOTM2YyI+PGVsbGlwc2UgY3g9IjIxIiBjeT0iMzIiIHJ4PSIzOCIgcnk9IjE1IiB0cmFuc2Zvcm09InJvdGF0ZSgyNSAyMSAzMikiLz48ZWxsaXBzZSBjeD0iNjQiIGN5PSI0NCIgcng9IjMwIiByeT0iMTQiIHRyYW5zZm9ybT0icm90YXRlKC0yNyA2NCA0NCkiLz48ZWxsaXBzZSBjeD0iNTYiIGN5PSI3OCIgcng9IjM2IiByeT0iMTQiIHRyYW5zZm9ybT0icm90YXRlKDI5IDU2IDc4KSIvPjxlbGxpcHNlIGN4PSI5NSIgY3k9Ijk2IiByeD0iMzAiIHJ5PSIxMyIgdHJhbnNmb3JtPSJyb3RhdGUoLTIzIDk1IDk2KSIvPjxlbGxpcHNlIGN4PSIxNyIgY3k9IjEiIHJ4PSI0MCIgcnk9IjE4Ii8+PC9nPgo8ZyBmaWxsPSIjYTZhYzgzIj48ZWxsaXBzZSBjeD0iMTciIGN5PSI1MiIgcng9IjI2IiByeT0iMTEiIHRyYW5zZm9ybT0icm90YXRlKDMwIDE3IDUyKSIvPjxlbGxpcHNlIGN4PSI2NiIgY3k9IjkxIiByeD0iMjQiIHJ5PSIxMCIgdHJhbnNmb3JtPSJyb3RhdGUoMzAgNjYgOTEpIi8+PC9nPgo8cGF0aCBkPSJNOTA3IDM5NmMtNS0xOCAxOC0yMSAxNS0zNk05MjQgMzk1YzEtMjAgMjAtMTYgMjQtMzMiIHN0cm9rZT0iIzkzOWM3NiIgc3Ryb2tlLXdpZHRoPSIzIi8+PGNpcmNsZSBjeD0iOTIxIiBjeT0iMzYwIiByPSI1IiBmaWxsPSIjZDBiODhhIi8+PGNpcmNsZSBjeD0iOTQ5IiBjeT0iMzYyIiByPSI1IiBmaWxsPSIjZDBiODhhIi8+Cjwvc3ZnPgo=" alt="麦间烘焙店：绿色条纹雨棚、摆满面包的橱窗、街边长椅与盆栽" />
+      <div class="scene-note">${icon(state.paused ? 'pause' : 'leaf')}<span>${state.paused ? '生活偶尔，也需要慢一点' : state.phase === 'closed' ? '灯火可亲，明天见' : jobs.length ? '空气里，是面包出炉前的期待' : state.phase === 'open' ? '今天的好心情，新鲜供应' : '一间属于你的小小烘焙店'}</span></div>
+      ${state.phase === 'open' ? '<div class="walker person-a"><span></span><i></i></div><div class="walker person-b"><span></span><i></i></div>' : ''}
+      ${weatherFor(state).icon === 'rain' ? '<div class="rain-overlay"></div>' : ''}
+      <span class="scene-label">BAKED WITH A LITTLE LOVE</span>
+    </div>
+    <div class="shop-clock"><span>${icon('clock')}<b>${time(state.minute)}</b><small>营业时间 09:00 — 18:00</small></span><div class="time-track"><i style="width:${Math.max(0, (state.minute - 540) / 540 * 100)}%"></i></div><span class="clock-end">${state.phase === 'prep' ? '开门前时间不流逝' : state.phase === 'closed' ? '今日营业结束' : '每秒 = 店内 5 分钟'}</span></div>
+    <div class="oven-strip"><div class="oven-label">${icon('oven')}<div><strong>我的烤箱</strong><span>${jobs.length} / ${state.upgrades.oven + 1} 个烤位使用中</span></div></div><div class="oven-slots">${Array.from({ length: 1 + state.upgrades.oven }, (_, i) => {
+      const j = jobs[i];
+      return j ? `<div class="oven-job"><span>${getProduct(j.product).name} <b>${j.remaining}s</b></span><div class="progress"><i style="width:${(1 - j.remaining / j.duration) * 100}%"></i></div></div>` : action('bake:roll', `${icon('plus')} 烤一炉餐包 · ¥18`, 'oven-empty', `aria-label="空闲烤位，烤一炉奶油餐包，食材18元" ${state.phase === 'closed' ? 'disabled' : ''}`);
+    }).join('')}</div></div>
+  </section>`;
+}
+
+function orderPanel() {
+  const o = orderFor(state), p = getProduct(o.product), count = Math.min(o.quantity, state.stock[o.product]);
+  const latest = state.events.find(e => ['regular', 'sale', 'miss', 'ready'].includes(e.type));
+  return `<aside class="today-column"><section class="order-card panel"><div class="panel-heading"><h2>街坊的预订</h2>${icon('gift')}</div><div class="order-paper"><span class="paper-pin"></span><div class="order-top"><span class="order-number">ORDER #${String(state.day).padStart(3, '0')}</span><span class="handwritten">给今天一点期待</span></div><h3>${o.name}</h3><p>“想把这份香甜，也分享给身边的人。”</p><div class="order-product">${pastry(o.product)}<div><strong>${p.name} × ${o.quantity}</strong><span>今日交付 · 口碑 +3</span></div></div><div class="order-reward"><span>一份暖心回报</span><b>${money(o.reward)}</b></div><div class="order-progress"><span>${state.orderDone ? '谢谢你，已经收到啦' : `已备好 ${count} / ${o.quantity} 份`}</span><span>${state.orderDone ? '100' : Math.round(count / o.quantity * 100)}%</span></div><div class="progress"><i style="width:${state.orderDone ? 100 : count / o.quantity * 100}%"></i></div></div>${action('fulfill', state.orderDone ? `${icon('check')} 预订已完成` : `交付预订 ${icon('arrow')}`, `button ${state.orderDone ? 'completed' : 'primary'} full`, `${state.orderDone || state.phase === 'closed' ? 'disabled' : ''}`)}</section>
+    <section class="daily-note"><span>${icon('heart')} 小店里的声音</span><p>${latest ? esc(latest.text) : '“路过闻到面包香，忍不住想进来看看。”'} </p><small>${latest ? `第 ${latest.day} 天 · ${time(latest.minute)}` : '来自未来的第一位客人'}</small></section></aside>`;
+}
+
+function productCard(p, recipeView = false) {
+  const unlocked = state.unlocked.includes(p.id), job = state.jobs.find(j => j.product === p.id);
+  return `<article class="product-card ${!unlocked ? 'is-locked' : ''}"><div class="product-art art-${p.id}">${pastry(p.id)}<span class="product-tag">${!unlocked ? `${icon('lock')} 新风味` : p.id === 'roll' ? '店长推荐' : p.id === 'croissant' ? '酥香人气' : p.audience}</span>${unlocked ? `<span class="stock-count">在售 <b>${state.stock[p.id]}</b></span>` : ''}</div><div class="product-body"><div class="product-title"><div><h3>${p.name}</h3><span>${p.en}</span></div><strong>${money(Math.round(p.price * (state.discount ? 0.8 : 1)))}<small>/ 份</small></strong></div><p>${p.description}</p><div class="product-meta"><span>${icon('clock')} ${Math.ceil(p.time * (state.upgrades.helper ? 0.65 : 1))} 秒 / 炉</span><span>6 份 · 食材 ${money(p.cost)}</span></div>${unlocked ? action(`bake:${p.id}`, `${icon(job ? 'oven' : 'plus')} ${job ? '再烤一炉' : '烤一炉'}<span>−${money(p.cost)}</span>`, 'button bake-button full', `data-key="bake-${p.id}" ${state.phase === 'closed' ? 'disabled' : ''}`) : action(`research:${p.id}`, `${icon('lock')} ${state.reputation < p.unlock ? `口碑 ${p.unlock} 解锁研发` : `研发配方 · ${money(p.research)}`}`, 'button research-button full', `${state.reputation < p.unlock ? 'disabled' : ''}`)}${recipeView ? `<div class="recipe-profit">每炉满售收益 <b>+${money(p.price * 6 - p.cost)}</b><span>未扣水电与工资</span></div>` : ''}</div></article>`;
+}
+
+function menu() {
+  return `<section class="menu-section"><div class="section-heading"><div><h2>今日的面包架 <span>TODAY'S FRESH BAKES</span></h2><p>一炉六份，刚刚好的香气。</p></div><div class="menu-tools"><span class="capacity">${occupied(state)} / ${capacity(state)} 陈列位</span>${action('discount', `<span class="switch ${state.discount ? 'on' : ''}"><i></i></span> 八折促销`, 'discount-button', `role="switch" aria-checked="${state.discount}"`)}${action('recipes', `全部食谱 ${icon('arrow')}`, 'text-button')}</div></div><div class="product-grid">${PRODUCTS.filter(p => state.unlocked.includes(p.id)).map(p => productCard(p)).join('')}</div></section>`;
+}
+
+function recipes() {
+  return `<div class="section-intro"><span class="tag">${icon('book')} 已掌握 ${state.unlocked.length} / ${PRODUCTS.length} 份配方</span><p>每一款新品，都是小店新的可能。研发会消耗零钱，解锁后即可烘焙。</p></div><div class="product-grid recipe-grid">${PRODUCTS.map(p => productCard(p, true)).join('')}</div>`;
+}
+
+function upgrades() {
+  return `<div class="growth-banner"><div><span class="eyebrow">LITTLE BY LITTLE</span><h2>不必很快，慢慢变好。</h2><p>更大的烤箱、更亮的招牌。把赚来的零钱，花在你期待的未来。</p></div>${icon('wheat')}</div><div class="upgrade-grid">${UPGRADES.map(u => `<article class="upgrade-card panel"><div class="upgrade-icon">${icon(u.icon)}</div><div class="upgrade-heading"><h3>${u.name}</h3><span>Lv. ${state.upgrades[u.id]} / ${u.max}</span></div><p>${u.description}</p><div class="upgrade-dots">${Array.from({ length: u.max }, (_, i) => `<i class="${i < state.upgrades[u.id] ? 'filled' : ''}"></i>`).join('')}</div>${action(`upgrade:${u.id}`, state.upgrades[u.id] >= u.max ? `${icon('check')} 已升至满级` : `升级设备 <span>${money(upgradeCost(state, u))} ${icon('arrow')}</span>`, 'button outline full', state.upgrades[u.id] >= u.max ? 'disabled' : '')}</article>`).join('')}</div><section class="decoration panel"><div><span class="eyebrow">A TOUCH OF YOU</span><h2>给小店，换一种心情。</h2><p>喜欢的颜色，本身就是一种奖励。门面配色免费更换。</p></div><div class="theme-options">${[['sage', '鼠尾草绿'], ['rose', '落日玫瑰'], ['sand', '蜂蜜暖棕']].map(([id, label]) => action(`theme:${id}`, `<i class="theme-swatch ${id}">${state.theme === id ? icon('check') : ''}</i><span>${label}</span>`, `theme-button ${state.theme === id ? 'active' : ''}`, `aria-pressed="${state.theme === id}"`)).join('')}</div></section>`;
+}
+
+function journal() {
+  return `<section class="regulars"><div class="section-heading"><div><h2>那些熟悉的身影 <span>OUR NEIGHBOURS</span></h2><p>一份面包，慢慢变成一份惦记。</p></div><span class="tag">${icon('heart')} ${state.totalServed} 次温暖相遇</span></div><div class="regular-grid">${REGULARS.map(r => { const count = state.affection[r.id], level = Math.min(2, Math.floor(Math.max(0, count - 1) / 4)); return `<article class="regular-card panel"><div class="avatar" style="--avatar-color:${r.color}">${r.initial}<span>${icon('heart')}</span></div><div><h3>${r.name}<small>${count >= 9 ? '老朋友' : count >= 4 ? '渐渐熟悉' : '初次相识'}</small></h3><span class="muted">${r.tag}</span><p>${count ? r.stories[level] : '还没正式认识，备好喜欢的面包，等一次温暖相遇。'}</p><div class="friendship">${Array.from({ length: 5 }, (_, i) => icon('heart', i < Math.ceil(count / 2) ? 'filled-heart' : '')).join('')}<span>暖心互动 ${count} 次</span></div></div></article>`; }).join('')}</div></section>
+    <div class="journal-columns"><section class="panel journal-feed"><div class="panel-heading"><h2>小店流水笺</h2><span class="muted">最近 30 条</span></div>${state.events.length ? state.events.map(e => `<div class="feed-item"><span class="feed-icon ${esc(e.type)}">${icon(e.type === 'sale' ? 'coin' : e.type === 'regular' ? 'heart' : e.type === 'miss' ? 'people' : 'wheat')}</span><div><p>${esc(e.text)}</p><small>第 ${e.day} 天 · ${time(e.minute)}</small></div></div>`).join('') : '<div class="empty-state">还没有故事。烤一炉面包，故事就开始了。</div>'}</section><section class="panel history-panel"><div class="panel-heading"><h2>营业小结</h2>${icon('chart')}</div>${state.history.length ? state.history.map(h => `<article class="history-row"><div><b>第 ${h.day} 天</b><small>售出 ${h.sold} 份 · 招待 ${h.served} 人</small></div><strong class="${h.profit >= 0 ? 'positive' : 'negative'}">${h.profit >= 0 ? '+' : '−'}${money(Math.abs(h.profit))}<small>营业结余</small></strong></article>`).join('') : '<div class="empty-state">结束第一天营业后，<br>这里会记住你的努力。</div>'}</section></div>`;
+}
+
+function render() {
+  const focused = document.activeElement?.dataset.action;
+  app.innerHTML = `${sidebar()}<main>${header()}${metrics()}<div class="page-content">${view === 'shop' ? `<div class="shop-layout">${shopScene()}${orderPanel()}</div>${menu()}` : view === 'recipes' ? recipes() : view === 'upgrades' ? upgrades() : journal()}</div><footer>麦间 · 街角烘焙日记 <span>把平凡的日子，烤得香一点。</span><span>慢慢来，好味道值得等待 ${icon('wheat')}</span></footer></main>`;
+  if (focused) app.querySelector(`[data-action="${focused}"]`)?.focus({ preventScroll: true });
+}
+
+function openModal(kind) {
+  modal = kind;
+  let content;
+  if (kind === 'summary') {
+    const h = state.lastSummary;
+    if (!h) return;
+    content = `<div class="summary-art">${icon('wheat')}</div><p class="eyebrow">DAY ${String(h.day).padStart(2, '0')} · A DAY WELL SPENT</p><h2>今天的努力，香气满满。</h2><p class="modal-subtitle">${h.early ? '提前收好小店，也给自己留一点时间。' : '灯光暗下来，今天的故事先写到这里。'}</p><div class="summary-main"><span>今日营业结余</span><strong class="${h.profit >= 0 ? '' : 'negative'}">${h.profit >= 0 ? '+' : '−'}${money(Math.abs(h.profit))}</strong></div><dl class="summary-ledger"><div><dt>面包与预订收入</dt><dd>${money(h.revenue)}</dd></div><div><dt>食材、水电${state.upgrades.helper ? '与工资' : ''}</dt><dd>−${money(h.expense)}</dd></div><div><dt>余量 ${h.waste} 份 · 闭店折价回收</dt><dd>+${money(h.clearance)}</dd></div><div><dt>今日心愿 ${h.goalMet ? '达成' : '未达成'}</dt><dd>+${money(h.bonus)}</dd></div></dl><div class="summary-people"><span>${icon('people')} 招待 ${h.served} 位客人</span><span>${icon('shop')} 售出 ${h.sold} 份美味</span></div><p class="fine-print">闭店时，未出炉的批次一并完成。剩余面包按售价的约 25% 回收，不隔夜销售。设备与配方投资不计入营业结余。</p>${action('next', `收好今天，迎接明天 ${icon('arrow')}`, 'button primary full')}${action('dismiss', '先看看今天的小店', 'text-button full')}`;
+  } else if (kind === 'close-confirm') {
+    content = `${icon('shop', 'modal-symbol')}<p class="eyebrow">CLOSE FOR TODAY</p><h2>今天就营业到这里？</h2><p class="modal-subtitle">当前时间 ${time(state.minute)}。剩余面包会折价回收，正在烤的批次会一并结算，今天未交付的预订将结束。</p>${action('close', '确认打烊', 'button primary full')}${action('dismiss', '再经营一会儿', 'button outline full')}`;
+  } else if (kind === 'reset-confirm') {
+    content = `${icon('leaf', 'modal-symbol')}<h2>重新开一家小店？</h2><p class="modal-subtitle">这会清除当前进度。建议先回到设置导出存档，留住这段日子。</p>${action('reset', '确认重新开始', 'button danger full')}${action('settings', '返回，先保留进度', 'button outline full')}`;
+  } else {
+    content = `<p class="eyebrow">MAKE YOURSELF AT HOME</p><h2>留住小店的每一天。</h2><p class="modal-subtitle">游戏会自动保存在当前浏览器中。清理浏览器数据或更换设备前，记得导出一份存档。</p><div class="settings-group"><h3>存档与备份</h3>${action('export', `${icon('journal')} 导出存档 ${icon('arrow')}`, 'button outline full')}<label class="button outline full import-button">${icon('book')} 导入存档<input type="file" id="import-save" accept=".json,application/json" /></label></div><div class="settings-group"><h3>经营小贴士</h3><p>选一款面包，每炉烤 6 份。开门后顾客自动选购，可以随时补烤。每天 09:00–18:00 约 108 秒；备货阶段只运行烤箱。暂停或打开弹窗时，时间停止。</p><p>八折促销会降低售价，并让顾客更愿意尝试其他口味。预订每天一份，营业前后都能交付。</p><p>天气与周末会影响客流。错过心愿也没关系，明天还有新机会。</p></div>${action('reset-confirm', '重新开始游戏', 'text-button danger-text full')}`;
+  }
+  modalRoot.innerHTML = `<div class="modal-overlay"><section class="modal ${kind === 'summary' ? 'summary-modal' : ''}" role="dialog" aria-modal="true" aria-label="${kind === 'summary' ? '今日营业结算' : '小店设置'}" tabindex="-1">${action('dismiss', icon('close'), 'icon-button modal-close', 'aria-label="关闭弹窗"')}${content}</section></div>`;
+  document.body.classList.add('modal-open');
+  requestAnimationFrame(() => modalRoot.querySelector('.modal')?.focus());
+}
+
+function dismiss() { modal = null; modalRoot.innerHTML = ''; document.body.classList.remove('modal-open'); }
+
+document.addEventListener('click', e => {
+  const target = e.target.closest('[data-action]');
+  if (!target || target.disabled) return;
+  e.preventDefault();
+  const [name, id] = target.dataset.action.split(':');
+  if (['shop', 'recipes', 'upgrades', 'journal'].includes(name)) { view = name; dismiss(); render(); window.scrollTo({ top: 0, behavior: 'instant' }); }
+  else if (name === 'bake') run(() => bake(state, id), '面团送进烤箱啦，稍等片刻。');
+  else if (name === 'open') run(() => openShop(state), '营业牌已翻开，欢迎第一位客人！');
+  else if (name === 'fulfill') run(() => fulfillOrder(state), '预订已送出，感谢你的用心！');
+  else if (name === 'upgrade') run(() => buyUpgrade(state, id), '升级完成，小店又变好了！');
+  else if (name === 'research') run(() => research(state, id), '新配方已收好，可以烤一炉试试啦！');
+  else if (name === 'theme') { state.theme = id; save(); render(); toast('门面配色已更换，在我的小店看看吧。'); }
+  else if (name === 'discount') { state.discount = !state.discount; save(); render(); toast(state.discount ? '八折促销已开启，顾客更愿意尝试不同口味。' : '恢复原价，用好味道留住客人。'); }
+  else if (name === 'pause') { state.paused = !state.paused; save(); render(); }
+  else if (['settings', 'close-confirm', 'reset-confirm', 'summary'].includes(name)) openModal(name);
+  else if (name === 'dismiss') dismiss();
+  else if (name === 'close') { dismiss(); run(() => closeShop(state)); openModal('summary'); }
+  else if (name === 'next') { dismiss(); run(() => nextDay(state)); }
+  else if (name === 'reset') { state = createGame(); view = 'shop'; dismiss(); save(); render(); toast('新的小店，新的一天。欢迎回来。'); }
+  else if (name === 'export') {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = `麦间-第${state.day}天.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('存档已导出，替你留住这段日子。');
+  }
+});
+
+document.addEventListener('change', async e => {
+  if (e.target.id !== 'import-save') return;
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    if (file.size > 1000000) throw Error('存档文件过大。');
+    const raw = JSON.parse(await file.text());
+    if (!validateSave(raw)) throw Error('存档格式不正确，原来的进度已保留。');
+    if (!window.confirm(`载入第 ${raw.day} 天的存档？这将替换当前进度。`)) return;
+    state = raw; view = 'shop'; dismiss(); save(); render(); toast('存档载入成功，小店等你很久啦。');
+    if (state.phase === 'closed') openModal('summary');
+  } catch (error) { toast(error instanceof SyntaxError ? '无法解析存档，请选择导出的 JSON 文件。' : error.message); }
+  finally { e.target.value = ''; }
+});
+
+document.addEventListener('keydown', e => {
+  if (!modal) return;
+  if (e.key === 'Escape') dismiss();
+  if (e.key === 'Tab') {
+    const items = [...modalRoot.querySelectorAll('button:not(:disabled), input, [tabindex="0"]')];
+    const first = items[0], last = items.at(-1);
+    if (e.shiftKey && (document.activeElement === first || document.activeElement.classList.contains('modal'))) { e.preventDefault(); last?.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+  }
+});
+modalRoot.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) dismiss(); });
+window.addEventListener('beforeunload', save);
+document.addEventListener('visibilitychange', save);
+setInterval(() => {
+  if (modal || document.hidden || state.paused || state.phase === 'closed') return;
+  const previous = state.phase;
+  advance(state); save(); render();
+  if (previous === 'open' && state.phase === 'closed') openModal('summary');
+}, 1000);
+render(); save();
+if (loadMessage) toast(loadMessage);
+if (state.phase === 'closed') openModal('summary');
+
+})();
+</script>
+</body>
+</html>
