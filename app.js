@@ -1,8 +1,10 @@
-import { PRODUCTS, UPGRADES, REGULARS, getProduct, createGame, bake, advance, openShop, closeShop, nextDay, fulfillOrder, buyUpgrade, research, capacity, occupied, weatherFor, reputationLabel, dailyTarget, upgradeCost, orderFor, validateSave } from './game.js';
+import { PRODUCTS, UPGRADES, REGULARS, getProduct, createGame, bake, advance, openShop, closeShop, nextDay, fulfillOrder, buyUpgrade, research, capacity, occupied, weatherFor, reputationLabel, dailyTarget, upgradeCost, orderFor, validateSave, hydrateGame, VISITOR_STAGES, greetVisitor, waitVisitor, recommendVisitor, serveVisitor } from './game.js';
 import { icon, pastry } from './art.js';
+import { createBakeryScene } from './scene.js';
 
 const SAVE_KEY = 'maijian-bakery-v1';
 let storageOK = true, loadMessage = '', state = load(), view = 'shop', modal = null, toastTimer;
+let sceneCanvas = null, bakeryScene = null, selectedVisitorId = null;
 const app = document.querySelector('#app');
 const modalRoot = document.querySelector('#modal-root');
 const money = n => `¥${Math.round(n).toLocaleString('zh-CN')}`;
@@ -15,7 +17,7 @@ function load() {
     const text = localStorage.getItem(SAVE_KEY);
     if (text) {
       const raw = JSON.parse(text);
-      if (validateSave(raw)) return raw;
+      if (validateSave(raw)) return hydrateGame(raw);
       localStorage.setItem(`${SAVE_KEY}-backup`, text);
       loadMessage = '旧存档格式异常，已保留备份，并为你开启新小店。';
     }
@@ -72,13 +74,11 @@ function shopScene() {
   const stage = state.phase === 'prep' ? '准备中' : state.phase === 'open' ? '营业中' : '已打烊';
   const jobs = state.jobs;
   return `<section class="scene-card panel"><div class="panel-heading"><h2>街角的麦间 <span>YOUR LITTLE BAKERY</span></h2><span class="status-pill ${state.phase}"><i></i>${stage}</span></div>
-    <div class="shop-scene theme-${state.theme} ${state.phase === 'open' && !state.paused ? 'is-open' : ''} ${weatherFor(state).icon === 'rain' ? 'rainy' : ''}">
-      <img class="storefront" src="assets/storefront.svg" alt="麦间烘焙店：绿色条纹雨棚、摆满面包的橱窗、街边长椅与盆栽" />
-      <div class="scene-note">${icon(state.paused ? 'pause' : 'leaf')}<span>${state.paused ? '生活偶尔，也需要慢一点' : state.phase === 'closed' ? '灯火可亲，明天见' : jobs.length ? '空气里，是面包出炉前的期待' : state.phase === 'open' ? '今天的好心情，新鲜供应' : '一间属于你的小小烘焙店'}</span></div>
-      ${state.phase === 'open' ? '<div class="walker person-a"><span></span><i></i></div><div class="walker person-b"><span></span><i></i></div>' : ''}
-      ${weatherFor(state).icon === 'rain' ? '<div class="rain-overlay"></div>' : ''}
-      <span class="scene-label">BAKED WITH A LITTLE LOVE</span>
+    <div class="shop-scene live-scene theme-${state.theme} ${state.phase === 'open' && !state.paused ? 'is-open' : ''}">
+      <canvas id="bakery-canvas" width="1000" height="520" aria-label="烘焙店营业现场：顾客从店门进入，挑选面包、在柜台付款后提袋离开。可点击人物选择互动。"></canvas>
+      <div class="live-scene-heading"><span>${icon('shop')} 营业现场</span><span>${state.paused ? '已暂停' : state.phase === 'open' ? `${state.visitors.length} 位客人在店里` : state.phase === 'closed' ? '明天见' : '等待第一位客人'}</span></div>
     </div>
+    <div class="visitor-roster" aria-label="店内顾客">${state.visitors.length ? state.visitors.map(v => action(`visitor:${v.id}`, `<i class="visitor-dot look-${v.look}"></i><span>${esc(v.name)}<small>${VISITOR_STAGES[v.stage]}</small></span>${v.stage === 'paying' ? `<b>+${money(v.paidAmount)}</b>` : ''}`, `visitor-chip ${selectedGuest()?.id === v.id ? 'active' : ''}`, `aria-pressed="${selectedGuest()?.id === v.id}"`)).join('') : `<span class="roster-empty">${icon('people')} ${state.phase === 'open' ? '门铃随时会响起，留一点新鲜给街坊。' : '开门后，顾客会进店挑选，也会在柜台和你聊天。'}</span>`}</div>
     <div class="shop-clock"><span>${icon('clock')}<b>${time(state.minute)}</b><small>营业时间 09:00 — 18:00</small></span><div class="time-track"><i style="width:${Math.max(0, (state.minute - 540) / 540 * 100)}%"></i></div><span class="clock-end">${state.phase === 'prep' ? '开门前时间不流逝' : state.phase === 'closed' ? '今日营业结束' : '每秒 = 店内 5 分钟'}</span></div>
     <div class="oven-strip"><div class="oven-label">${icon('oven')}<div><strong>我的烤箱</strong><span>${jobs.length} / ${state.upgrades.oven + 1} 个烤位使用中</span></div></div><div class="oven-slots">${Array.from({ length: 1 + state.upgrades.oven }, (_, i) => {
       const j = jobs[i];
@@ -87,11 +87,27 @@ function shopScene() {
   </section>`;
 }
 
+function selectedGuest() {
+  return state.visitors.find(v => v.id === selectedVisitorId)
+    || state.visitors.find(v => v.stage === 'waiting')
+    || state.visitors.find(v => v.stage === 'paying')
+    || state.visitors.find(v => v.stage === 'browsing')
+    || state.visitors[0];
+}
+function conversationCard() {
+  const v = selectedGuest();
+  if (!v) return `<section class="conversation-card panel empty-conversation"><div class="panel-heading"><h2>柜台小对话</h2>${icon('heart')}</div><div class="conversation-empty">${icon('people')}<h3>${state.phase === 'open' ? '门铃响起，就有新的故事。' : '美味之外，也想听听你的日常。'}</h3><p>点选店内人物，可以打招呼、推荐现货，或请客人等一炉。客人也会自己挑选和结账。</p></div></section>`;
+  const pending = v.outcome === 'pending', waiting = v.stage === 'waiting';
+  const canGreet = pending && ['waiting', 'browsing'].includes(v.stage);
+  const desired = getProduct(v.selected || v.requested);
+  const hasStock = (v.selected ? state.stock[v.selected] > 0 : v.favorites.some(id => state.stock[id] > 0));
+  return `<section class="conversation-card panel" data-visitor-id="${v.id}"><div class="panel-heading"><h2>柜台小对话 <span>LET'S SAY HELLO</span></h2><span class="conversation-stage">${VISITOR_STAGES[v.stage]}</span></div><div class="conversation-body"><div class="speaker"><div class="guest-portrait look-${v.look}"><span>${esc(v.name.slice(-1))}</span>${v.regular ? icon('heart') : ''}</div><div><h3>${esc(v.name)}<span>${v.regular ? '熟悉的街坊' : '今天的新朋友'}</span></h3><p>${pending ? `想买 ${desired.name} × ${v.quantity}` : v.outcome === 'sale' ? `已付款 ${money(v.paidAmount)}${v.tip ? ' · 含小费 ¥2' : ''}` : '这次没有买到，下次早点来'}</p></div></div><blockquote class="guest-speech">“${esc(v.line)}”</blockquote>${pending ? `<div class="guest-patience"><span>${waiting ? '还愿意等一会儿' : '正沿着面包香走来'}</span><span>${waiting ? `${v.remaining} 秒` : VISITOR_STAGES[v.stage]}</span></div><div class="progress"><i style="width:${waiting ? v.remaining / v.duration * 100 : 100}%"></i></div><div class="conversation-actions">${action(`greet:${v.id}`, `${icon(v.greeted ? 'check' : 'heart')} ${v.greeted ? '已经聊过' : '热情招呼'}`, 'button outline', `${!canGreet || v.greeted ? 'disabled' : ''}`)}${action(`wait:${v.id}`, `${icon('clock')} ${v.waitUsed ? '正在等出炉' : '请等一炉'}`, 'button outline', `${!waiting || v.waitUsed ? 'disabled' : ''}`)}</div>${waiting ? `<div class="recommendations"><span>${v.recommended ? '客人已接受推荐，准备打包吧' : '也可以推荐现货'}</span><div>${PRODUCTS.filter(p => state.stock[p.id] > 0).map(p => action(`recommend:${v.id}:${p.id}`, p.name, 'recommend-button', v.recommended ? 'disabled' : '')).join('') || '<small>面包架空啦，先烤一炉吧</small>'}</div></div>` : ''}${action(`serve:${v.id}`, `${icon('gift')} 打包结账 ${waiting && hasStock ? icon('arrow') : ''}`, 'button primary full', !waiting || !hasStock ? 'disabled' : '')}` : `<div class="purchase-receipt">${icon(v.outcome === 'sale' ? 'check' : 'heart')}<span>${v.outcome === 'sale' ? `已取走 ${getProduct(v.selected).name} × ${v.quantity}，谢谢你的用心。` : '备好喜欢的面包，下次再相遇。'}</span></div>`}</div></section>`;
+}
+
 function orderPanel() {
   const o = orderFor(state), p = getProduct(o.product), count = Math.min(o.quantity, state.stock[o.product]);
-  const latest = state.events.find(e => ['regular', 'sale', 'miss', 'ready'].includes(e.type));
-  return `<aside class="today-column"><section class="order-card panel"><div class="panel-heading"><h2>街坊的预订</h2>${icon('gift')}</div><div class="order-paper"><span class="paper-pin"></span><div class="order-top"><span class="order-number">ORDER #${String(state.day).padStart(3, '0')}</span><span class="handwritten">给今天一点期待</span></div><h3>${o.name}</h3><p>“想把这份香甜，也分享给身边的人。”</p><div class="order-product">${pastry(o.product)}<div><strong>${p.name} × ${o.quantity}</strong><span>今日交付 · 口碑 +3</span></div></div><div class="order-reward"><span>一份暖心回报</span><b>${money(o.reward)}</b></div><div class="order-progress"><span>${state.orderDone ? '谢谢你，已经收到啦' : `已备好 ${count} / ${o.quantity} 份`}</span><span>${state.orderDone ? '100' : Math.round(count / o.quantity * 100)}%</span></div><div class="progress"><i style="width:${state.orderDone ? 100 : count / o.quantity * 100}%"></i></div></div>${action('fulfill', state.orderDone ? `${icon('check')} 预订已完成` : `交付预订 ${icon('arrow')}`, `button ${state.orderDone ? 'completed' : 'primary'} full`, `${state.orderDone || state.phase === 'closed' ? 'disabled' : ''}`)}</section>
-    <section class="daily-note"><span>${icon('heart')} 小店里的声音</span><p>${latest ? esc(latest.text) : '“路过闻到面包香，忍不住想进来看看。”'} </p><small>${latest ? `第 ${latest.day} 天 · ${time(latest.minute)}` : '来自未来的第一位客人'}</small></section></aside>`;
+  return `<aside class="today-column">${conversationCard()}<section class="order-card panel"><div class="panel-heading"><h2>街坊的预订</h2>${icon('gift')}</div><div class="order-paper"><span class="paper-pin"></span><div class="order-top"><span class="order-number">ORDER #${String(state.day).padStart(3, '0')}</span><span class="handwritten">给今天一点期待</span></div><h3>${o.name}</h3><p>“想把这份香甜，也分享给身边的人。”</p><div class="order-product">${pastry(o.product)}<div><strong>${p.name} × ${o.quantity}</strong><span>今日交付 · 口碑 +3</span></div></div><div class="order-reward"><span>一份暖心回报</span><b>${money(o.reward)}</b></div><div class="order-progress"><span>${state.orderDone ? '谢谢你，已经收到啦' : `已备好 ${count} / ${o.quantity} 份`}</span><span>${state.orderDone ? '100' : Math.round(count / o.quantity * 100)}%</span></div><div class="progress"><i style="width:${state.orderDone ? 100 : count / o.quantity * 100}%"></i></div></div>${action('fulfill', state.orderDone ? `${icon('check')} 预订已完成` : `交付预订 ${icon('arrow')}`, `button ${state.orderDone ? 'completed' : 'primary'} full`, `${state.orderDone || state.phase === 'closed' ? 'disabled' : ''}`)}</section>
+</aside>`;
 }
 
 function productCard(p, recipeView = false) {
@@ -118,7 +134,20 @@ function journal() {
 
 function render() {
   const focused = document.activeElement?.dataset.action;
-  app.innerHTML = `${sidebar()}<main>${header()}${metrics()}<div class="page-content">${view === 'shop' ? `<div class="shop-layout">${shopScene()}${orderPanel()}</div>${menu()}` : view === 'recipes' ? recipes() : view === 'upgrades' ? upgrades() : journal()}</div><footer>麦间 · 街角烘焙日记 <span>把平凡的日子，烤得香一点。</span><span>慢慢来，好味道值得等待 ${icon('wheat')}</span></footer></main>`;
+  app.innerHTML = `${sidebar()}<main>${header()}${metrics()}<div class="page-content">${view === 'shop' ? `<div class="shop-layout">${shopScene()}${orderPanel()}</div>${menu()}` : view === 'recipes' ? recipes() : view === 'upgrades' ? upgrades() : journal()}</div><footer>麦间 · 街角烘焙日记 v1.1 <span>把平凡的日子，烤得香一点。</span><span>慢慢来，好味道值得等待 ${icon('wheat')}</span></footer></main>`;
+  if (view === 'shop') {
+    const placeholder = app.querySelector('#bakery-canvas');
+    if (sceneCanvas) placeholder.replaceWith(sceneCanvas);
+    else {
+      sceneCanvas = placeholder;
+      bakeryScene = createBakeryScene(sceneCanvas, {
+        getState: () => state,
+        isPaused: () => state.paused || !!modal || document.hidden,
+        getSelected: () => selectedGuest()?.id,
+        onSelect: id => { selectedVisitorId = id; render(); },
+      });
+    }
+  }
   if (focused) app.querySelector(`[data-action="${focused}"]`)?.focus({ preventScroll: true });
 }
 
@@ -134,7 +163,7 @@ function openModal(kind) {
   } else if (kind === 'reset-confirm') {
     content = `${icon('leaf', 'modal-symbol')}<h2>重新开一家小店？</h2><p class="modal-subtitle">这会清除当前进度。建议先回到设置导出存档，留住这段日子。</p>${action('reset', '确认重新开始', 'button danger full')}${action('settings', '返回，先保留进度', 'button outline full')}`;
   } else {
-    content = `<p class="eyebrow">MAKE YOURSELF AT HOME</p><h2>留住小店的每一天。</h2><p class="modal-subtitle">游戏会自动保存在当前浏览器中。清理浏览器数据或更换设备前，记得导出一份存档。</p><div class="settings-group"><h3>存档与备份</h3>${action('export', `${icon('journal')} 导出存档 ${icon('arrow')}`, 'button outline full')}<label class="button outline full import-button">${icon('book')} 导入存档<input type="file" id="import-save" accept=".json,application/json" /></label></div><div class="settings-group"><h3>经营小贴士</h3><p>选一款面包，每炉烤 6 份。开门后顾客自动选购，可以随时补烤。每天 09:00–18:00 约 108 秒；备货阶段只运行烤箱。暂停或打开弹窗时，时间停止。</p><p>八折促销会降低售价，并让顾客更愿意尝试其他口味。预订每天一份，营业前后都能交付。</p><p>天气与周末会影响客流。错过心愿也没关系，明天还有新机会。</p></div>${action('reset-confirm', '重新开始游戏', 'text-button danger-text full')}`;
+    content = `<p class="eyebrow">MAKE YOURSELF AT HOME</p><h2>留住小店的每一天。</h2><p class="modal-subtitle">游戏会自动保存在当前浏览器中。清理浏览器数据或更换设备前，记得导出一份存档。</p><div class="settings-group"><h3>存档与备份</h3>${action('export', `${icon('journal')} 导出存档 ${icon('arrow')}`, 'button outline full')}<label class="button outline full import-button">${icon('book')} 导入存档<input type="file" id="import-save" accept=".json,application/json" /></label></div><div class="settings-group"><h3>经营小贴士</h3><p>选一款面包，每炉烤 6 份。开门后能看见顾客进店、挑选和结账，可以点人物聊天、推荐现货或请等一炉，也可以让顾客自动购买。每天 09:00–18:00 约 108 秒；备货阶段只运行烤箱。暂停或打开弹窗时，时间停止。</p><p>八折促销会降低售价，并让顾客更愿意尝试其他口味。预订每天一份，营业前后都能交付。</p><p>天气与周末会影响客流。错过心愿也没关系，明天还有新机会。</p></div>${action('reset-confirm', '重新开始游戏', 'text-button danger-text full')}`;
   }
   modalRoot.innerHTML = `<div class="modal-overlay"><section class="modal ${kind === 'summary' ? 'summary-modal' : ''}" role="dialog" aria-modal="true" aria-label="${kind === 'summary' ? '今日营业结算' : '小店设置'}" tabindex="-1">${action('dismiss', icon('close'), 'icon-button modal-close', 'aria-label="关闭弹窗"')}${content}</section></div>`;
   document.body.classList.add('modal-open');
@@ -147,8 +176,13 @@ document.addEventListener('click', e => {
   const target = e.target.closest('[data-action]');
   if (!target || target.disabled) return;
   e.preventDefault();
-  const [name, id] = target.dataset.action.split(':');
+  const [name, id, extra] = target.dataset.action.split(':');
   if (['shop', 'recipes', 'upgrades', 'journal'].includes(name)) { view = name; dismiss(); render(); window.scrollTo({ top: 0, behavior: 'instant' }); }
+  else if (name === 'visitor') { selectedVisitorId = Number(id); render(); }
+  else if (name === 'greet') { selectedVisitorId = Number(id); run(() => greetVisitor(state, id)); }
+  else if (name === 'wait') { selectedVisitorId = Number(id); run(() => waitVisitor(state, id)); }
+  else if (name === 'recommend') { selectedVisitorId = Number(id); run(() => recommendVisitor(state, id, extra)); }
+  else if (name === 'serve') { selectedVisitorId = Number(id); run(() => serveVisitor(state, id)); }
   else if (name === 'bake') run(() => bake(state, id), '面团送进烤箱啦，稍等片刻。');
   else if (name === 'open') run(() => openShop(state), '营业牌已翻开，欢迎第一位客人！');
   else if (name === 'fulfill') run(() => fulfillOrder(state), '预订已送出，感谢你的用心！');
@@ -161,7 +195,7 @@ document.addEventListener('click', e => {
   else if (name === 'dismiss') dismiss();
   else if (name === 'close') { dismiss(); run(() => closeShop(state)); openModal('summary'); }
   else if (name === 'next') { dismiss(); run(() => nextDay(state)); }
-  else if (name === 'reset') { state = createGame(); view = 'shop'; dismiss(); save(); render(); toast('新的小店，新的一天。欢迎回来。'); }
+  else if (name === 'reset') { state = createGame(); selectedVisitorId = null; view = 'shop'; dismiss(); save(); render(); toast('新的小店，新的一天。欢迎回来。'); }
   else if (name === 'export') {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
@@ -179,7 +213,7 @@ document.addEventListener('change', async e => {
     const raw = JSON.parse(await file.text());
     if (!validateSave(raw)) throw Error('存档格式不正确，原来的进度已保留。');
     if (!window.confirm(`载入第 ${raw.day} 天的存档？这将替换当前进度。`)) return;
-    state = raw; view = 'shop'; dismiss(); save(); render(); toast('存档载入成功，小店等你很久啦。');
+    state = hydrateGame(raw); selectedVisitorId = null; view = 'shop'; dismiss(); save(); render(); toast('存档载入成功，小店等你很久啦。');
     if (state.phase === 'closed') openModal('summary');
   } catch (error) { toast(error instanceof SyntaxError ? '无法解析存档，请选择导出的 JSON 文件。' : error.message); }
   finally { e.target.value = ''; }

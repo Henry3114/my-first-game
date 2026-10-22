@@ -1,0 +1,115 @@
+/* Customer-driven interior. Its canvas is retained across dashboard updates. */
+.shop-layout { align-items: start; }
+.live-scene { display: block; width: 100%; aspect-ratio: 1000 / 520; min-height: 0; background: #eee7d6; }
+#bakery-canvas { display: block; width: 100%; height: 100%; touch-action: manipulation; cursor: pointer; }
+.live-scene-heading { position: absolute; top: 14px; left: 16px; right: 16px; display: flex; justify-content: space-between; pointer-events: none; }
+.live-scene-heading > span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; border-radius: 5px; font-size: 9px; color: #6d7b60; background: #fffdf1e8; box-shadow: 0 2px 8px #4d4f3510; }
+.live-scene-heading .icon { width: 13px; height: 13px; }
+.visitor-roster { padding: 10px 13px; min-height: 60px; display: flex; align-items: center; gap: 7px; overflow-x: auto; border-bottom: 1px solid var(--line); scrollbar-width: thin; background: #f9f8ef; }
+.visitor-chip { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid #e4e5d5; background: #fffdf3; border-radius: 6px; flex-shrink: 0; text-align: left; color: #859073; }
+.visitor-chip.active { background: #edf0df; border-color: #b7c3a1; color: #5b754e; }
+.visitor-chip > span { font-size: 10px; white-space: nowrap; }
+.visitor-chip small { font-size: 8px; display: block; margin-top: 4px; color: #9aa187; }
+.visitor-chip b { font-size: 12px; color: #79935c; font-family: Georgia, serif; font-weight: 400; }
+.visitor-dot { width: 11px; height: 11px; border-radius: 50%; background: #b98d65; box-shadow: 0 0 0 3px #f2e9db; }
+.look-1 { --guest-color: #7a8d94; }
+.look-2 { --guest-color: #c69486; }
+.look-3 { --guest-color: #a09d7d; }
+.look-4 { --guest-color: #789a85; }
+.look-0 { --guest-color: #b98d65; }
+.visitor-dot { background: var(--guest-color); }
+.roster-empty { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #9ba287; line-height: 1.8; padding: 5px 2px; }
+.roster-empty .icon { width: 16px; height: 16px; }
+.conversation-card { min-height: 340px; }
+.conversation-card .panel-heading { border-bottom: 1px solid #ececdd; height: 48px; padding: 0 16px; }
+.conversation-card .panel-heading h2 { font-size: 12px; }
+.conversation-card .panel-heading h2 > span { display: none; }
+.conversation-stage { padding: 5px 7px; border-radius: 4px; background: #eef1e1; font-size: 8px; color: #8b9c74; }
+.conversation-body { padding: 16px; }
+.speaker { display: flex; align-items: center; gap: 11px; }
+.guest-portrait { width: 41px; height: 44px; position: relative; display: grid; place-items: center; background: var(--guest-color); border-radius: 45% 45% 35% 35%; color: #fff9e6; font-family: var(--serif); font-size: 19px; flex-shrink: 0; }
+.guest-portrait > .icon { position: absolute; bottom: -4px; right: -5px; padding: 3px; width: 19px; height: 19px; background: #fbf7e9; color: #b68c72; border-radius: 50%; }
+.speaker h3 { font-size: 12px; font-weight: 500; }
+.speaker h3 > span { font-size: 8px; color: #a2a88e; margin-left: 8px; font-weight: 400; }
+.speaker p { font-size: 9px; color: #8d997b; margin-top: 7px; }
+.guest-speech { margin: 16px 0 12px; padding: 12px 13px; min-height: 61px; background: #f3f1e4; border: 1px solid #eae5d3; border-radius: 3px 11px 11px 11px; font-family: var(--serif); font-size: 12px; color: #788568; line-height: 1.9; }
+.guest-patience { display: flex; justify-content: space-between; font-size: 8px; color: #a2a98d; margin-bottom: 7px; }
+.conversation-actions { display: flex; gap: 7px; margin-top: 13px; }
+.conversation-actions .button { min-height: 31px; font-size: 9px; padding: 6px 7px; flex: 1; gap: 4px; }
+.conversation-actions .icon { width: 12px; height: 12px; }
+.conversation-body > .button { min-height: 34px; margin-top: 12px; font-size: 10px; }
+.recommendations { margin-top: 12px; }
+.recommendations > span { font-size: 8px; color: #989e86; }
+.recommendations > div { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.recommendations small { font-size: 9px; color: #b1926c; line-height: 1.8; }
+.recommend-button { font-size: 9px; padding: 5px 7px; border: 1px dashed #d9dec9; background: #f5f5e9; border-radius: 4px; color: #81936d; }
+.recommend-button:hover:not(:disabled) { background: #e4ecd6; }
+.purchase-receipt { background: #edf2e3; border: 1px solid #e0e7d0; color: #7d9268; font-size: 10px; padding: 13px; margin-top: 18px; display: flex; align-items: center; gap: 8px; line-height: 1.9; border-radius: 5px; }
+.purchase-receipt .icon { width: 18px; height: 18px; }
+.conversation-empty { padding: 30px 22px; text-align: center; }
+.conversation-empty > .icon { width: 30px; height: 30px; color: #b5b89b; margin-bottom: 18px; }
+.conversation-empty h3 { font-family: var(--serif); font-size: 14px; font-weight: 400; line-height: 1.9; color: #8c987a; }
+.conversation-empty p { font-size: 10px; line-height: 2; color: #a0a68c; margin-top: 14px; }
+.today-column { gap: 16px; }
+.today-column .order-card .order-paper { padding-top: 17px; }
+.today-column .order-card .order-product { margin: 9px 0; }
+.today-column .order-card .order-product .pastry { width: 58px; height: 47px; }
+.today-column .order-card .order-paper h3 { font-size: 14px; margin-top: 11px; }
+.today-column .order-card .order-reward { padding: 8px 0; }
+@media (min-width: 1550px) {
+  .conversation-card { min-height: 370px; }
+  .conversation-body { padding: 22px; }
+  .guest-speech { font-size: 14px; min-height: 76px; }
+  .conversation-actions .button { font-size: 11px; min-height: 37px; }
+  .speaker h3 { font-size: 14px; }
+  .speaker p { font-size: 11px; }
+  .conversation-body > .button { font-size: 12px; min-height: 41px; }
+}
+@media (max-width: 1200px) {
+  .live-scene { min-height: 0; }
+  .live-scene-heading { top: 10px; left: 10px; right: 10px; }
+  .live-scene-heading > span { font-size: 7px; padding: 5px 7px; }
+  .roster-empty { font-size: 9px; }
+  .visitor-roster { padding: 8px 10px; }
+  .conversation-body { padding: 13px; }
+}
+@media (max-width: 740px) {
+  .live-scene { aspect-ratio: 1000 / 560; }
+  #bakery-canvas { object-fit: cover; }
+  .visitor-roster { min-height: 55px; }
+  .visitor-chip { padding: 6px 8px; }
+  .visitor-chip > span { font-size: 9px; }
+  .visitor-chip small { font-size: 7px; }
+  .roster-empty { font-size: 9px; }
+  .today-column { display: flex; flex-direction: column; gap: 14px; }
+  .conversation-card { min-height: 0; }
+  .conversation-card .panel-heading { height: 44px; }
+  .conversation-body { padding: 17px; }
+  .speaker h3 { font-size: 13px; }
+  .speaker h3 > span { font-size: 9px; }
+  .speaker p { font-size: 10px; }
+  .guest-speech { font-size: 14px; padding: 13px 15px; min-height: 55px; }
+  .guest-patience { font-size: 10px; }
+  .conversation-actions .button { font-size: 12px; min-height: 40px; padding: 8px 10px; }
+  .conversation-actions .icon { width: 15px; height: 15px; }
+  .conversation-body > .button { font-size: 12px; min-height: 41px; }
+  .recommendations > span { font-size: 10px; }
+  .recommend-button { font-size: 11px; padding: 8px 12px; }
+  .purchase-receipt { font-size: 12px; }
+  .conversation-empty { padding: 24px; }
+  .conversation-empty h3 { font-size: 16px; }
+  .conversation-empty p { font-size: 12px; }
+  .today-column .order-card .panel-heading { height: 44px; }
+  .today-column .order-card .panel-heading h2 { font-size: 12px; }
+  .today-column .order-card .order-paper { margin: 6px 16px 0; padding: 17px 15px 13px; }
+  .today-column .order-card .order-paper h3 { font-size: 16px; }
+  .today-column .order-card .order-paper > p { font-size: 10px; }
+  .today-column .order-card .order-product .pastry { width: 75px; height: 60px; }
+  .today-column .order-card .order-product strong { font-size: 12px; }
+  .today-column .order-card .order-product div > span { font-size: 10px; }
+  .today-column .order-card .order-reward > span { font-size: 10px; }
+  .today-column .order-card .order-reward b { font-size: 22px; }
+  .today-column .order-card .order-progress { font-size: 9px; }
+  .today-column .order-card > .button { margin: 12px 16px 0; width: calc(100% - 32px); min-height: 39px; font-size: 12px; }
+  .speaker { gap: 13px; }
+}

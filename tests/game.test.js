@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createGame, bake, advance, openShop, closeShop, nextDay, fulfillOrder, buyUpgrade, research, capacity, occupied, PRODUCTS, validateSave } from '../game.js';
+import { createGame, bake, advance, openShop, closeShop, nextDay, fulfillOrder, buyUpgrade, research, capacity, occupied, PRODUCTS, validateSave, hydrateGame, greetVisitor, waitVisitor, recommendVisitor, serveVisitor } from '../game.js';
 
 test('new shop starts directly without a tutorial', () => {
   const s = createGame(42);
@@ -87,4 +87,76 @@ test('30 days preserve economic, save and inventory invariants', () => {
   }
   assert.equal(s.day, 31); assert.equal(s.history.length, 30);
   assert.ok(s.totalRevenue > 1000); assert.ok(s.totalServed > 100);
+});
+
+test('a visitor enters, browses, waits, pays once, then leaves with the purchase', () => {
+  const s = createGame(42); s.stock.roll = 6; openShop(s);
+  const id = s.visitors[0].id;
+  const visitor = () => s.visitors.find(v => v.id === id);
+  assert.equal(visitor().stage, 'arriving');
+  assert.equal(s.cash, 360);
+  advance(s, 3); assert.equal(visitor().stage, 'browsing');
+  advance(s, 3); assert.equal(visitor().stage, 'waiting');
+  assert.equal(s.cash, 360); assert.equal(s.stock.roll, 6);
+  assert.ok(serveVisitor(s, id).ok);
+  const sale = visitor().paidAmount, quantity = visitor().quantity;
+  assert.equal(visitor().stage, 'paying'); assert.equal(s.stock.roll, 6 - quantity);
+  assert.equal(s.cash, 360 + sale);
+  assert.ok(serveVisitor(s, id).error); assert.equal(s.cash, 360 + sale);
+  advance(s, 2); assert.equal(visitor().stage, 'leaving');
+  assert.equal(s.cash, 360 + sale);
+  advance(s, 4); assert.equal(visitor(), undefined);
+});
+
+test('greeting, waiting and recommending have bounded effects on the actual sale', () => {
+  const s = createGame(42); s.stock.toast = 6; openShop(s); advance(s, 6);
+  const v = s.visitors[0], id = v.id;
+  assert.equal(v.requested, 'roll');
+  assert.ok(serveVisitor(s, id).error, 'cannot sell a missing favorite without recommendation');
+  const patience = v.remaining;
+  assert.ok(greetVisitor(s, id).ok); assert.equal(v.remaining, patience + 2);
+  assert.ok(greetVisitor(s, id).error);
+  assert.ok(waitVisitor(s, id).ok); assert.equal(v.remaining, patience + 12);
+  assert.ok(waitVisitor(s, id).error);
+  assert.ok(recommendVisitor(s, id, 'cake').error);
+  assert.ok(recommendVisitor(s, id, 'toast').ok);
+  assert.ok(recommendVisitor(s, id, 'toast').error);
+  assert.ok(serveVisitor(s, id).ok);
+  assert.equal(v.selected, 'toast'); assert.equal(v.tip, 2);
+  assert.equal(v.paidAmount, v.quantity * 16 + 2);
+  assert.equal(s.cash, 360 + v.paidAmount);
+  assert.equal(s.affection.yu, 2);
+});
+
+test('unavailable products cause a visible departure rather than a phantom purchase', () => {
+  const s = createGame(42); bake(s, 'roll'); openShop(s);
+  // A real production job permits opening; remove stock after it comes out.
+  advance(s, 7); s.stock.roll = 0;
+  const v = s.visitors[0];
+  const cash = s.cash;
+  advance(s, 6);
+  assert.equal(v.outcome, 'miss'); assert.equal(v.stage, 'leaving');
+  assert.equal(v.paidAmount, 0); assert.equal(s.cash, cash);
+  assert.ok(s.stats.missed > 0);
+});
+
+test('waiting and paid customers restore without duplication; old saves retain progress', () => {
+  const s = createGame(42); s.stock.roll = 12; openShop(s); advance(s, 6);
+  const waiting = JSON.parse(JSON.stringify(s));
+  assert.equal(validateSave(waiting), true);
+  const id = waiting.visitors[0].id;
+  serveVisitor(waiting, id);
+  const paid = JSON.parse(JSON.stringify(waiting)), cash = paid.cash;
+  assert.equal(validateSave(paid), true);
+  assert.ok(serveVisitor(paid, id).error);
+  // End trading now: a paid visitor must not be settled for a second time.
+  paid.visitors = paid.visitors.filter(v => v.id === id);
+  closeShop(paid);
+  assert.equal(paid.cash, cash + paid.lastSummary.clearance + paid.lastSummary.bonus - 8);
+  const legacy = createGame(7); legacy.day = 9; legacy.cash = 1234; delete legacy.visitors;
+  assert.equal(validateSave(legacy), true);
+  hydrateGame(legacy); assert.equal(legacy.day, 9); assert.equal(legacy.cash, 1234);
+  assert.deepEqual(legacy.visitors, []);
+  const bad = JSON.parse(JSON.stringify(s)); bad.visitors[0].stage = 'unknown';
+  assert.equal(validateSave(bad), false);
 });
