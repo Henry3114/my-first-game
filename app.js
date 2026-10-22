@@ -1,243 +1,156 @@
-import { PRODUCTS, UPGRADES, REGULARS, getProduct, createGame, bake, advance, openShop, closeShop, nextDay, fulfillOrder, buyUpgrade, research, capacity, occupied, weatherFor, reputationLabel, dailyTarget, upgradeCost, orderFor, validateSave, hydrateGame, VISITOR_STAGES, greetVisitor, waitVisitor, recommendVisitor, serveVisitor } from './game.js';
+import { PRODUCTS, INGREDIENTS, UPGRADES, REGULARS, NEEDS, VISITOR_STAGES, getProduct, createGame, hydrateGame, validateSave, capacity, occupied, weatherFor, reputationLabel, dailyTarget, upgradeCost, sellingPrice, bakeDuration, dayEvent, improveRecipe, wages, stockInfo, ovenStatus, prepareBatch, loadOven, removeBatch, buyIngredient, toggleMenu, openShop, advance, askVisitor, waitVisitor, recommendVisitor, acceptOrder, declineVisitor, startAssembly, sliceOrder, decorateOrder, packOrder, deliverOrder, cancelOrder, acceptReservation, orderFor, buyUpgrade, research, closeShop, nextDay } from './game.js';
 import { icon, pastry } from './art.js';
 import { createBakeryScene } from './scene.js';
 
 const SAVE_KEY = 'maijian-bakery-v1';
-let storageOK = true, loadMessage = '', state = load(), view = 'shop', modal = null, toastTimer;
-let sceneCanvas = null, bakeryScene = null, selectedVisitorId = null;
-const app = document.querySelector('#app');
-const modalRoot = document.querySelector('#modal-root');
+let storageOK = true, loadMessage = '', state = load(), view = 'shop', modal = null, modalId = null, toastTimer;
+let sceneCanvas = null, selectedVisitorId = null;
+const app = document.querySelector('#app'), modalRoot = document.querySelector('#modal-root');
 const money = n => `¥${Math.round(n).toLocaleString('zh-CN')}`;
 const esc = text => String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const time = n => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`;
 const action = (name, label, cls = 'button', extra = '') => `<button class="${cls}" data-action="${name}" ${extra}>${label}</button>`;
-
 function load() {
   try {
-    const text = localStorage.getItem(SAVE_KEY);
-    if (text) {
-      const raw = JSON.parse(text);
-      if (validateSave(raw)) return hydrateGame(raw);
-      localStorage.setItem(`${SAVE_KEY}-backup`, text);
-      loadMessage = '旧存档格式异常，已保留备份，并为你开启新小店。';
+    const data = localStorage.getItem(SAVE_KEY);
+    if (data) {
+      const raw = JSON.parse(data);
+      if (validateSave(raw)) { const legacy = raw.version === 1; const game = hydrateGame(raw); if (legacy) loadMessage = '经营台已升级，原有进度已保留。现在可以接单、排产和出餐啦。'; return game; }
+      localStorage.setItem(`${SAVE_KEY}-backup`, data); loadMessage = '存档格式异常，已保留备份。可以从设置导入有效存档。';
     }
-  } catch { loadMessage = '无法读取存档，已开启新小店。请在设置中导出备份。'; }
+  } catch { loadMessage = '浏览器存储暂不可用，仍可游玩，请导出存档备份。'; }
   return createGame();
 }
-function save() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); storageOK = true; }
-  catch { if (storageOK) toast('浏览器存储不可用，请通过设置导出存档。'); storageOK = false; }
-}
-function toast(message) {
-  const el = document.querySelector('#toast');
-  el.textContent = message; el.classList.add('visible');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('visible'), 3800);
-}
-function run(fn, success) {
-  const result = fn();
-  if (result?.error) toast(result.error);
-  else if (success) toast(success);
-  save(); render();
-}
-
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); storageOK = true; } catch { if (storageOK) toast('自动存档不可用，请在设置导出备份。'); storageOK = false; } }
+function toast(message) { const el = document.querySelector('#toast'); el.textContent = message; el.classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('visible'), 3800); }
+function run(fn, success) { const result = fn(); if (result?.error) toast(result.error); else if (success) toast(success); save(); render(); return result; }
+function selectedGuest() { return state.visitors.find(v => v.id === selectedVisitorId) || state.visitors.find(v => v.stage === 'waiting') || state.visitors.find(v => v.stage === 'ordering') || state.visitors.find(v => v.stage === 'paying') || state.visitors[0]; }
 function sidebar() {
-  return `<aside class="sidebar">
-    <a class="brand" href="#" data-action="shop" aria-label="麦间首页"><span class="brand-mark">${icon('wheat')}</span><span class="brand-name">麦间<span>MAI JIAN BAKERY</span></span></a>
-    <div class="sidebar-label">一间小店，一点理想</div>
-    <nav aria-label="主导航">${[
-      ['shop', 'shop', '我的小店', '01'], ['recipes', 'book', '烘焙食谱', '02'], ['upgrades', 'leaf', '小店成长', '03'], ['journal', 'journal', '街角日记', '04'],
-    ].map(([id, glyph, label, no]) => action(id, `${icon(glyph)}<span>${label}</span><small>${no}</small>`, `nav-item ${view === id ? 'active' : ''}`, `aria-current="${view === id ? 'page' : 'false'}"`)).join('')}</nav>
-    <div class="sidebar-bottom"><div class="little-note">${icon('wheat')}<p>面包会有的，<br>喜欢的生活也是。</p><span>A LITTLE BETTER, EVERY DAY</span></div>
-    <div class="save-status">${icon(storageOK ? 'check' : 'close')}<span>${storageOK ? '进度已自动保存' : '存档不可用 · 请导出'}</span></div>
-    ${action('settings', `${icon('settings')} 偏好与存档`, 'settings-button')}</div>
-  </aside>`;
+  return `<aside class="sidebar"><a class="brand" href="#" data-action="shop" aria-label="麦间首页"><span class="brand-mark">${icon('wheat')}</span><span class="brand-name">麦间<span>MAI JIAN BAKERY</span></span></a><div class="sidebar-label">一间小店，一点理想</div><nav aria-label="主导航">${[['shop', 'shop', '营业操作台', '01'], ['recipes', 'book', '菜单与食谱', '02'], ['upgrades', 'leaf', '设备与员工', '03'], ['journal', 'journal', '街角日记', '04']].map(([id, glyph, name, no]) => action(id, `${icon(glyph)}<span>${name}</span><small>${no}</small>`, `nav-item ${view === id ? 'active' : ''}`, `aria-current="${view === id ? 'page' : 'false'}"`)).join('')}</nav><div class="sidebar-bottom"><div class="little-note">${icon('wheat')}<p>记住一份心意，<br>烤好每一天。</p><span>HANDMADE, HEARTFELT, EVERY DAY</span></div><div class="save-status">${icon(storageOK ? 'check' : 'close')}<span>${storageOK ? '进度已自动保存' : '请导出备份'}</span></div>${action('settings', `${icon('settings')} 偏好与存档`, 'settings-button')}</div></aside>`;
 }
-
 function header() {
-  const names = { shop: ['经营手记', '小小的店，热腾腾的日常。', '揉进一点耐心，等待美好出炉。'], recipes: ['风味收藏', '把喜欢的味道，留在食谱里。', '从一只餐包，到属于你的招牌。'], upgrades: ['慢慢成长', '让小店，变成理想的模样。', '每一份努力，都有看得见的回响。'], journal: ['街角来信', '面包之外，还有日常的故事。', '记住来过的人，也记住走过的每一天。'] };
-  const [eyebrow, title, sub] = names[view];
-  return `<header class="topbar"><div class="breadcrumb">麦间烘焙 <span>/</span> ${eyebrow}</div><div class="topbar-right"><span class="day-badge">DAY ${String(state.day).padStart(2, '0')}</span><span class="day-label">${state.day % 7 === 0 ? '周末时光' : '又是美好的一天'}</span>${action('pause', icon(state.paused ? 'play' : 'pause'), `icon-button ${state.paused ? 'selected' : ''}`, `aria-label="${state.paused ? '继续游戏' : '暂停游戏'}" title="${state.paused ? '继续' : '暂停'}"`)}${action('settings', icon('settings'), 'icon-button', 'aria-label="打开设置"')}</div></header>
-  <div class="page-heading"><div><p class="eyebrow">${eyebrow} <span>THE CORNER BAKERY</span></p><h1>${title}</h1><p class="subtitle">${sub}</p></div><div class="heading-action">${state.phase === 'prep' ? action('open', `${icon('shop')} 开始营业 ${icon('arrow')}`, 'button primary') : state.phase === 'open' ? action('close-confirm', `${icon('shop')} 提前打烊`, 'button outline') : action('next', `开启新一天 ${icon('arrow')}`, 'button primary')}<span>${state.paused ? '时间已暂停，慢慢安排吧' : state.phase === 'prep' ? '备好面包，就开门迎客吧' : state.phase === 'open' ? '欢迎光临，今日好好营业' : '辛苦啦，明天也值得期待'}</span></div></div>`;
+  const labels = { shop: ['今日营业台', '接好每一单，烤好每一炉。'], recipes: ['菜单与食谱', '三款好味道，组成今日菜单。'], upgrades: ['设备与员工', '让双手忙得从容一点。'], journal: ['街角日记', '每一份评价，都值得记住。'] };
+  const [label, title] = labels[view];
+  return `<header class="topbar"><div class="breadcrumb">麦间烘焙 <span>/</span> ${label}</div><div class="topbar-right"><span class="day-badge">DAY ${String(state.day).padStart(2, '0')}</span><span class="day-label">${icon(weatherFor(state).icon)} ${weatherFor(state).name}${state.day % 7 === 0 ? ' · 周末' : ''}</span>${action('pause', icon(state.paused ? 'play' : 'pause'), `icon-button ${state.paused ? 'selected' : ''}`, `aria-label="${state.paused ? '继续游戏' : '暂停游戏'}"`)}${action('settings', icon('settings'), 'icon-button', 'aria-label="打开设置"')}</div></header><div class="page-heading work-heading"><div><p class="eyebrow">${label} <span>BAKE · SERVE · GROW</span></p><h1>${title}</h1><p class="subtitle">${state.paused ? '时间已暂停，可以慢慢安排。' : state.phase === 'prep' ? '开门前自由准备：选菜单、备面团，再装炉。' : state.phase === 'open' ? `${time(state.minute)} · 最多同时接三单，忙不过来可以婉拒。` : '辛苦了，收好今天的经验，明天继续。'}</p></div><div class="heading-action">${state.phase === 'prep' ? action('open', `${icon('shop')} 开始营业 ${icon('arrow')}`, 'button primary') : state.phase === 'open' ? action('close-confirm', '提前打烊', 'button outline') : action('next', `开启新一天 ${icon('arrow')}`, 'button primary')}<span>${state.phase === 'prep' ? '准备阶段不限时' : state.phase === 'open' ? `每日约 4 分半 · ${time(state.minute)}` : '原料留到明天，成品当天清售'}</span></div></div>`;
 }
-
 function metrics() {
-  const w = weatherFor(state);
-  return `<section class="metrics" aria-label="经营概况">
-    <article class="metric"><span class="metric-icon">${icon('coin')}</span><div><span class="metric-label">小店零钱</span><strong data-testid="cash">${money(state.cash)}</strong><small>把每一点积累，变成喜欢的样子</small></div></article>
-    <article class="metric"><span class="metric-icon terracotta">${icon('chart')}</span><div><span class="metric-label">今日营业额</span><strong>${money(state.stats.revenue)}<em>/ ${money(dailyTarget(state))}</em></strong><small>达成今日心愿，额外奖励 ¥40</small></div></article>
-    <article class="metric"><span class="metric-icon gold">${icon('heart')}</span><div><span class="metric-label">街坊口碑</span><strong>${state.reputation}<em>/ 100</em><span class="rep-tag">${reputationLabel(state)}</span></strong><small>${state.totalServed} 位客人的日常，与你有了交集</small></div></article>
-    <article class="metric weather"><span class="metric-icon">${icon(w.icon)}</span><div><span class="metric-label">今日天气</span><strong>${w.name}<em>第 ${state.day} 天</em></strong><small>${w.label}</small></div></article>
-  </section>`;
+  const average = state.stats.ratedCount ? Math.round(state.stats.qualityTotal / state.stats.ratedCount) : null;
+  return `<section class="metrics work-metrics" aria-label="经营概况"><article class="metric"><span class="metric-icon">${icon('coin')}</span><div><span class="metric-label">可用零钱</span><strong data-testid="cash">${money(state.cash)}</strong><small>采购和包装消耗零钱，备料消耗原料</small></div></article><article class="metric"><span class="metric-icon terracotta">${icon('chart')}</span><div><span class="metric-label">今日实收</span><strong>${money(state.stats.revenue)}<em>/ ${money(dailyTarget(state))}</em></strong><small>达成营业心愿 · 奖励 ¥40</small></div></article><article class="metric"><span class="metric-icon gold">${icon('heart')}</span><div><span class="metric-label">街坊口碑</span><strong>${state.reputation}<em>/ 100</em><span class="rep-tag">${reputationLabel(state)}</span></strong><small>品质、新鲜度与服务共同决定评价</small></div></article><article class="metric weather"><span class="metric-icon">${icon('people')}</span><div><span class="metric-label">今日出餐</span><strong>${state.stats.served}<em>单 · ${average === null ? '待评价' : `${average} 分`}</em></strong><small>丢单 ${state.stats.missed} · 主动婉拒 ${state.stats.declined}</small></div></article></section>`;
 }
-
+function ticketCard(o) {
+  const remaining = Math.max(0, o.deadline - state.elapsed), p = getProduct(o.product), v = state.visitors.find(v => v.id === o.visitorId);
+  const known = o.known || v?.known;
+  let controls;
+  if (o.stage === 'accepted') {
+    const ready = state.stock[o.product] >= o.quantity;
+    controls = `<div class="ticket-stock ${ready ? 'positive' : ''}">${ready ? icon('check') : icon('oven')} 现货 ${state.stock[o.product]} / 需要 ${o.quantity}</div>${ready ? action(`assemble:${o.id}`, '取货到出餐台 →', 'button primary full') : action(`plan:${o.id}`, `${icon('plus')} 安排一盘${p.name}`, 'button outline full')}<p class="ticket-hint">${ready ? '取货后检查切片、装饰和包装要求。' : '先备面团、装炉，留意金黄出炉时机。'}</p>`;
+  } else if (o.stage === 'assembling') {
+    controls = `<div class="assembly-preview">${pastry(o.product)}<span>${o.sliced ? '已切六片' : '整份'}${o.decoration ? ` · ${o.decoration === 'berry' ? '草莓' : o.decoration === 'cream' ? '奶油' : '柠檬'}装饰` : ''}<small>烘焙品质 ${Math.round(o.items.quality)}</small></span></div>${o.task ? `<div class="task-running">${icon('clock')} ${o.task === 'slicing' ? '切片中' : '装饰中'} · ${o.taskRemaining} 秒</div>` : `${o.product === 'toast' && !o.sliced ? action(`slice:${o.id}`, `${icon('sparkles')} 切成六片 · ${state.upgrades.slicer ? 1 : 3} 秒`, 'button outline full') : ''}${['cake', 'tart'].includes(o.product) && !o.decoration ? `<div class="decoration-buttons">${['berry', 'cream', 'lemon'].map(t => action(`decorate:${o.id}:${t}`, `${t === 'berry' ? '草莓' : t === 'cream' ? '奶油' : '柠檬'} ¥1`, 'recommend-button')).join('')}</div>` : ''}<div class="pack-choices">${action(`pack:${o.id}:paper`, `${icon('gift')} 纸袋<small>成本 ¥1</small>`, 'button outline')}${action(`pack:${o.id}:gift`, `${icon('gift')} 礼盒<small>成本 ¥3</small>`, 'button outline')}</div>`}`;
+  } else controls = `<div class="packed-parcel ${o.packaging}">${icon('gift')}<span>${o.packaging === 'gift' ? '礼盒已封好' : '纸袋已装好'}<small>${o.sliced ? '吐司已切片 · ' : ''}${o.decoration ? '已装饰 · ' : ''}等待交付</small></span></div>${action(`deliver:${o.id}`, o.reservation && state.elapsed < 150 ? '14:00 后交付预订' : `交给${esc(o.name)} ${icon('arrow')}`, 'button primary full', o.reservation && (state.phase !== 'open' || state.elapsed < 150) ? 'disabled' : '')}<p class="ticket-hint">也可把订单拖到场景里对应的顾客身上。</p>`;
+  return `<article class="ticket-card ${o.stage} ${remaining <= 20 ? 'urgent' : ''}" data-order-id="${o.id}" ${o.stage === 'packed' ? `draggable="true" aria-label="${esc(o.name)}的已包装订单，可交付"` : ''}><div class="ticket-top"><span>${o.reservation ? '预订' : 'ORDER'} #${o.id}</span><b>${o.reservation && state.elapsed < 150 ? '14:00 来取' : `${remaining}s`}</b></div><div class="ticket-customer"><strong>${esc(o.name)}</strong><span>${money(o.quote)}</span></div><h3>${p.name} × ${o.quantity}</h3><div class="ticket-need">${known ? `${icon('check')} ${NEEDS[o.need]}` : `${icon('people')} 需求待确认 ${action(`ask:${o.visitorId}`, '问一下', 'inline-action')}`}</div>${controls}<div class="ticket-bottom"><span>${o.stage === 'accepted' ? '待取货' : o.stage === 'assembling' ? '占用出餐台' : '可以交付'}</span>${action(`cancel-confirm:${o.id}`, '取消', 'inline-action')}</div></article>`;
+}
+function orderBoard() {
+  return `<section class="order-board panel" id="orders"><div class="panel-heading"><h2>订单夹 <span>ACCEPT · PREPARE · DELIVER</span></h2><span class="tag">${state.orders.length} / 3 单</span></div><div class="tickets-grid">${state.orders.map(ticketCard).join('')}${Array.from({ length: 3 - state.orders.length }, () => `<div class="empty-ticket">${icon('journal')}<strong>空着的一张订单夹</strong><p>${state.phase === 'prep' ? '先备料，也可以接下今日预订。' : state.phase === 'closed' ? '今天的订单都已收好。' : '点选顾客，询问需求后接单。'}</p></div>`).join('')}</div></section>`;
+}
+function production() {
+  return `<section class="production-panel panel" id="kitchen"><div class="panel-heading"><h2>烘焙工作台 <span>MIX · BAKE · TAKE OUT</span></h2><span class="muted">陈列 ${occupied(state)} / ${capacity(state)}</span></div><div class="pantry-strip">${INGREDIENTS.map(i => `<div><span>${icon(i.icon)} ${i.name}<b>${state.pantry[i.id]}</b></span>${action(`buy:${i.id}`, `+${i.bundle} · ${money(i.unit * i.bundle)}`, 'supply-button', state.phase === 'closed' ? 'disabled' : '')}</div>`).join('')}</div><div class="production-columns"><section class="mixing-station"><div class="station-heading"><b>01</b><h3>备料台</h3><span>${state.trays.length} / ${1 + state.upgrades.prep}</span></div><div class="prep-menu">${state.menu.map(id => { const p = getProduct(id); return action(`prepare:${id}`, `${pastry(id)}<span>${p.name}<small>6 份 · 原料成本 ${money(p.cost)}</small></span>${icon('plus')}`, 'prepare-button', state.phase === 'closed' ? 'disabled' : ''); }).join('')}</div><div class="prepared-trays">${state.trays.map(t => `<div class="tray-card"><span>${icon('wheat')} ${getProduct(t.product).name}<small>${t.remaining > 0 ? `揉面中 · ${t.remaining}s` : '面团已就绪'}</small></span>${action(`load:${t.id}`, t.remaining ? '备料中' : '装入烤箱 →', 'button outline', t.remaining ? 'disabled' : '')}</div>`).join('') || '<p class="station-empty">点选菜单备一盘面团，再装入空炉位。</p>'}</div></section><section class="baking-station"><div class="station-heading"><b>02</b><h3>烤箱</h3><span>${state.jobs.length} / ${1 + state.upgrades.oven}</span></div><div class="oven-jobs">${Array.from({ length: 1 + state.upgrades.oven }, (_, slot) => { const j = state.jobs.find(j => j.slot === slot); if (!j) return `<div class="empty-oven">${icon('oven')}<span>${slot + 1} 号炉位空闲<small>从备料台装入烤盘</small></span></div>`; const st = ovenStatus(j); return `<div class="baking-job ${st.tone}" data-job-id="${j.id}"><div><strong>${getProduct(j.product).name} × 6</strong><span>${slot + 1} 号炉</span></div><div class="bake-gauge"><i style="left:${Math.min(99, j.elapsed / (j.duration * 1.8) * 100)}%"></i></div><div class="bake-labels"><span>未熟</span><span>金黄</span><span>偏焦</span></div><p>${st.label}<small>${j.elapsed < j.duration ? `还需 ${j.duration - j.elapsed}s 到金黄` : `已烘焙 ${j.elapsed}s`}</small></p>${action(`unload:${j.id}`, `${icon('oven')} ${st.tone === 'golden' ? '现在出炉，刚刚好' : '手动出炉'}`, `button ${st.tone === 'golden' ? 'primary' : 'outline'} full`)}</div>`; }).join('')}</div></section></div><div class="production-footnote">${icon('leaf')} 原料采购扣零钱；备料只消耗原料。${state.upgrades.helper ? '烘焙帮手会自动装炉并在金黄时出炉。' : '面团和烤箱都需要手动流转，留意金黄区间。'}</div></section>`;
+}
+function shelf() {
+  return `<section class="shelf-panel panel"><div class="panel-heading"><h2>今日面包架</h2>${action('recipes', '调整菜单 →', 'text-button')}</div><div class="shelf-items">${state.menu.map(id => { const p = getProduct(id), info = stockInfo(state, id); return `<div class="shelf-item">${pastry(id)}<div><strong>${p.name}<b>${state.stock[id]}</b></strong><span>${state.stock[id] ? `品质 ${info.quality} · ${info.fresh ? '新鲜温热' : '已放凉'}` : '还没有现货'}</span></div></div>`; }).join('')}</div><div class="shelf-promo">${action('discount', `<span class="switch ${state.discount ? 'on' : ''}"><i></i></span> 新接订单八折`, 'discount-button', `role="switch" aria-checked="${state.discount}"`)}<small>已接订单保留确认时的价格</small></div></section>`;
+}
 function shopScene() {
-  const stage = state.phase === 'prep' ? '准备中' : state.phase === 'open' ? '营业中' : '已打烊';
-  const jobs = state.jobs;
-  return `<section class="scene-card panel"><div class="panel-heading"><h2>街角的麦间 <span>YOUR LITTLE BAKERY</span></h2><span class="status-pill ${state.phase}"><i></i>${stage}</span></div>
-    <div class="shop-scene live-scene theme-${state.theme} ${state.phase === 'open' && !state.paused ? 'is-open' : ''}">
-      <canvas id="bakery-canvas" width="1000" height="520" aria-label="烘焙店营业现场：顾客从店门进入，挑选面包、在柜台付款后提袋离开。可点击人物选择互动。"></canvas>
-      <div class="live-scene-heading"><span>${icon('shop')} 营业现场</span><span>${state.paused ? '已暂停' : state.phase === 'open' ? `${state.visitors.length} 位客人在店里` : state.phase === 'closed' ? '明天见' : '等待第一位客人'}</span></div>
-    </div>
-    <div class="visitor-roster" aria-label="店内顾客">${state.visitors.length ? state.visitors.map(v => action(`visitor:${v.id}`, `<i class="visitor-dot look-${v.look}"></i><span>${esc(v.name)}<small>${VISITOR_STAGES[v.stage]}</small></span>${v.stage === 'paying' ? `<b>+${money(v.paidAmount)}</b>` : ''}`, `visitor-chip ${selectedGuest()?.id === v.id ? 'active' : ''}`, `aria-pressed="${selectedGuest()?.id === v.id}"`)).join('') : `<span class="roster-empty">${icon('people')} ${state.phase === 'open' ? '门铃随时会响起，留一点新鲜给街坊。' : '开门后，顾客会进店挑选，也会在柜台和你聊天。'}</span>`}</div>
-    <div class="shop-clock"><span>${icon('clock')}<b>${time(state.minute)}</b><small>营业时间 09:00 — 18:00</small></span><div class="time-track"><i style="width:${Math.max(0, (state.minute - 540) / 540 * 100)}%"></i></div><span class="clock-end">${state.phase === 'prep' ? '开门前时间不流逝' : state.phase === 'closed' ? '今日营业结束' : '每秒 = 店内 5 分钟'}</span></div>
-    <div class="oven-strip"><div class="oven-label">${icon('oven')}<div><strong>我的烤箱</strong><span>${jobs.length} / ${state.upgrades.oven + 1} 个烤位使用中</span></div></div><div class="oven-slots">${Array.from({ length: 1 + state.upgrades.oven }, (_, i) => {
-      const j = jobs[i];
-      return j ? `<div class="oven-job"><span>${getProduct(j.product).name} <b>${j.remaining}s</b></span><div class="progress"><i style="width:${(1 - j.remaining / j.duration) * 100}%"></i></div></div>` : action('bake:roll', `${icon('plus')} 烤一炉餐包 · ¥18`, 'oven-empty', `aria-label="空闲烤位，烤一炉奶油餐包，食材18元" ${state.phase === 'closed' ? 'disabled' : ''}`);
-    }).join('')}</div></div>
-  </section>`;
-}
-
-function selectedGuest() {
-  return state.visitors.find(v => v.id === selectedVisitorId)
-    || state.visitors.find(v => v.stage === 'waiting')
-    || state.visitors.find(v => v.stage === 'paying')
-    || state.visitors.find(v => v.stage === 'browsing')
-    || state.visitors[0];
+  return `<section class="scene-card panel"><div class="panel-heading"><h2>店内现场</h2><span class="status-pill ${state.phase}"><i></i>${state.phase === 'prep' ? '准备中' : state.phase === 'open' ? '营业中' : '已打烊'}</span></div><div class="shop-scene live-scene theme-${state.theme} ${state.phase === 'open' && !state.paused ? 'is-open' : ''}"><canvas id="bakery-canvas" width="1000" height="520" aria-label="烘焙店营业现场，可点击人物选择顾客，也可将已包装订单拖给顾客。"></canvas></div><div class="visitor-roster" aria-label="店内顾客">${state.visitors.map(v => action(`visitor:${v.id}`, `<i class="visitor-dot look-${v.look}"></i><span>${esc(v.name)}<small>${VISITOR_STAGES[v.stage]}</small></span>`, `visitor-chip ${selectedGuest()?.id === v.id ? 'active' : ''}`)).join('') || `<span class="roster-empty">${icon('people')} ${state.phase === 'open' ? '门铃随时会响起。' : '备好第一炉，准备开门。'}</span>`}</div><div class="shop-clock"><span>${icon('clock')}<b>${time(state.minute)}</b></span><div class="time-track"><i style="width:${state.elapsed / 270 * 100}%"></i></div><small>09:00 — 18:00</small></div></section>`;
 }
 function conversationCard() {
   const v = selectedGuest();
-  if (!v) return `<section class="conversation-card panel empty-conversation"><div class="panel-heading"><h2>柜台小对话</h2>${icon('heart')}</div><div class="conversation-empty">${icon('people')}<h3>${state.phase === 'open' ? '门铃响起，就有新的故事。' : '美味之外，也想听听你的日常。'}</h3><p>点选店内人物，可以打招呼、推荐现货，或请客人等一炉。客人也会自己挑选和结账。</p></div></section>`;
-  const pending = v.outcome === 'pending', waiting = v.stage === 'waiting';
-  const canGreet = pending && ['waiting', 'browsing'].includes(v.stage);
-  const desired = getProduct(v.selected || v.requested);
-  const hasStock = (v.selected ? state.stock[v.selected] > 0 : v.favorites.some(id => state.stock[id] > 0));
-  return `<section class="conversation-card panel" data-visitor-id="${v.id}"><div class="panel-heading"><h2>柜台小对话 <span>LET'S SAY HELLO</span></h2><span class="conversation-stage">${VISITOR_STAGES[v.stage]}</span></div><div class="conversation-body"><div class="speaker"><div class="guest-portrait look-${v.look}"><span>${esc(v.name.slice(-1))}</span>${v.regular ? icon('heart') : ''}</div><div><h3>${esc(v.name)}<span>${v.regular ? '熟悉的街坊' : '今天的新朋友'}</span></h3><p>${pending ? `想买 ${desired.name} × ${v.quantity}` : v.outcome === 'sale' ? `已付款 ${money(v.paidAmount)}${v.tip ? ' · 含小费 ¥2' : ''}` : '这次没有买到，下次早点来'}</p></div></div><blockquote class="guest-speech">“${esc(v.line)}”</blockquote>${pending ? `<div class="guest-patience"><span>${waiting ? '还愿意等一会儿' : '正沿着面包香走来'}</span><span>${waiting ? `${v.remaining} 秒` : VISITOR_STAGES[v.stage]}</span></div><div class="progress"><i style="width:${waiting ? v.remaining / v.duration * 100 : 100}%"></i></div><div class="conversation-actions">${action(`greet:${v.id}`, `${icon(v.greeted ? 'check' : 'heart')} ${v.greeted ? '已经聊过' : '热情招呼'}`, 'button outline', `${!canGreet || v.greeted ? 'disabled' : ''}`)}${action(`wait:${v.id}`, `${icon('clock')} ${v.waitUsed ? '正在等出炉' : '请等一炉'}`, 'button outline', `${!waiting || v.waitUsed ? 'disabled' : ''}`)}</div>${waiting ? `<div class="recommendations"><span>${v.recommended ? '客人已接受推荐，准备打包吧' : '也可以推荐现货'}</span><div>${PRODUCTS.filter(p => state.stock[p.id] > 0).map(p => action(`recommend:${v.id}:${p.id}`, p.name, 'recommend-button', v.recommended ? 'disabled' : '')).join('') || '<small>面包架空啦，先烤一炉吧</small>'}</div></div>` : ''}${action(`serve:${v.id}`, `${icon('gift')} 打包结账 ${waiting && hasStock ? icon('arrow') : ''}`, 'button primary full', !waiting || !hasStock ? 'disabled' : '')}` : `<div class="purchase-receipt">${icon(v.outcome === 'sale' ? 'check' : 'heart')}<span>${v.outcome === 'sale' ? `已取走 ${getProduct(v.selected).name} × ${v.quantity}，谢谢你的用心。` : '备好喜欢的面包，下次再相遇。'}</span></div>`}</div></section>`;
+  if (!v) return `<section class="conversation-card panel empty-conversation" id="frontdesk"><div class="panel-heading"><h2>前台接待</h2>${icon('heart')}</div><div class="conversation-empty"><h3>听清需求，再接好这一单。</h3><p>开门后点选顾客。最多同时接三单，也可以婉拒，给手里的订单多一点时间。</p></div></section>`;
+  const order = state.orders.find(o => o.visitorId === v.id), active = ['waiting', 'ordering'].includes(v.stage), p = getProduct(v.selected || v.requested);
+  return `<section class="conversation-card panel" id="frontdesk" data-visitor-id="${v.id}"><div class="panel-heading"><h2>前台接待</h2><span class="conversation-stage">${VISITOR_STAGES[v.stage]}</span></div><div class="conversation-body"><div class="speaker"><div class="guest-portrait look-${v.look}"><span>${esc(v.name.slice(-1))}</span></div><div><h3>${esc(v.name)}<span>${v.regular ? '熟悉的街坊' : '今日来客'}</span></h3><p>${v.outcome === 'sale' ? `实收 ${money(v.paidAmount)} · 小费 ${money(v.tip)}` : `想要 ${p.name} × ${v.quantity}`}</p></div></div><blockquote class="guest-speech">“${esc(v.line)}”</blockquote>${active ? `<div class="need-summary">${v.known ? `<span>${icon('check')} ${NEEDS[v.need]}</span><span>预算 ${money(v.budget)}</span>` : '<span>用途和预算还不清楚，可以问一问。</span>'}</div><div class="guest-patience"><span>${order ? '距离交付期限' : '等候接待'}</span><span>${v.remaining}s</span></div><div class="progress"><i style="width:${Math.min(100, v.remaining / v.duration * 100)}%"></i></div><div class="conversation-actions">${action(`ask:${v.id}`, `${icon('people')} ${v.known ? '需求已确认' : '询问需求'}`, 'button outline', v.known ? 'disabled' : '')}${action(`wait:${v.id}`, `${icon('clock')} ${v.waitUsed ? '已承诺等候' : '说明等候'}`, 'button outline', v.waitUsed ? 'disabled' : '')}</div>${v.stage === 'waiting' ? `<div class="recommendations"><span>推荐今日菜单 · 会改变订单商品</span><div>${state.menu.map(id => action(`recommend:${v.id}:${id}`, `${getProduct(id).name} ${money(sellingPrice(state, id))}`, 'recommend-button', v.recommended ? 'disabled' : '')).join('')}</div></div>${action(`accept:${v.id}`, `${icon('journal')} 接下这单 ${state.orders.length >= 3 ? '· 已满' : ''}`, 'button primary full', state.orders.length >= 3 ? 'disabled' : '')}${action(`decline:${v.id}`, '今天忙不过来，礼貌婉拒', 'text-button full')}` : order ? `<div class="purchase-receipt">${icon('journal')}<span>已进入订单夹 #${order.id}<br>${order.stage === 'accepted' ? '接下来取货，缺货时先安排制作。' : order.stage === 'assembling' ? '正在出餐台，检查切片和包装要求。' : '已经包装好，请交给这位客人。'}</span></div>` : ''}` : v.outcome !== 'pending' ? `<div class="purchase-receipt">${icon(v.outcome === 'sale' ? 'check' : 'heart')}<span>${v.outcome === 'sale' ? '订单已交付，评价记在街角日记里。' : '记下这次经验，期待下次再来。'}</span></div>` : '<p class="ticket-hint">客人正在进店挑选，稍等片刻到柜台。</p>'}</div></section>`;
 }
-
-function orderPanel() {
-  const o = orderFor(state), p = getProduct(o.product), count = Math.min(o.quantity, state.stock[o.product]);
-  return `<aside class="today-column">${conversationCard()}<section class="order-card panel"><div class="panel-heading"><h2>街坊的预订</h2>${icon('gift')}</div><div class="order-paper"><span class="paper-pin"></span><div class="order-top"><span class="order-number">ORDER #${String(state.day).padStart(3, '0')}</span><span class="handwritten">给今天一点期待</span></div><h3>${o.name}</h3><p>“想把这份香甜，也分享给身边的人。”</p><div class="order-product">${pastry(o.product)}<div><strong>${p.name} × ${o.quantity}</strong><span>今日交付 · 口碑 +3</span></div></div><div class="order-reward"><span>一份暖心回报</span><b>${money(o.reward)}</b></div><div class="order-progress"><span>${state.orderDone ? '谢谢你，已经收到啦' : `已备好 ${count} / ${o.quantity} 份`}</span><span>${state.orderDone ? '100' : Math.round(count / o.quantity * 100)}%</span></div><div class="progress"><i style="width:${state.orderDone ? 100 : count / o.quantity * 100}%"></i></div></div>${action('fulfill', state.orderDone ? `${icon('check')} 预订已完成` : `交付预订 ${icon('arrow')}`, `button ${state.orderDone ? 'completed' : 'primary'} full`, `${state.orderDone || state.phase === 'closed' ? 'disabled' : ''}`)}</section>
-</aside>`;
+function reservationCard() {
+  const r = orderFor(state), o = state.orders.find(o => o.reservation);
+  return `<section class="reservation-card panel"><div class="panel-heading"><h2>今日预订</h2>${icon('gift')}</div><div class="reservation-body"><strong>${r.name}</strong><p>${getProduct(r.product).name} × 6 · 礼盒</p><div><span>14:00–16:00 取货</span><b>${money(r.reward)}</b></div><small>接下后占用一个订单位，需要备货、包装并准时交付。</small>${state.reservationState === 'available' ? action('reservation', '接下预订 →', 'button outline full', state.phase === 'closed' || state.elapsed >= 180 ? 'disabled' : '') : `<span class="reservation-status">${state.reservationState === 'done' ? '已完成，谢谢你的用心' : state.reservationState === 'accepted' ? `已接单 · #${o?.id || ''}` : '今日预订已结束'}</span>`}</div></section>`;
 }
-
-function productCard(p, recipeView = false) {
-  const unlocked = state.unlocked.includes(p.id), job = state.jobs.find(j => j.product === p.id);
-  return `<article class="product-card ${!unlocked ? 'is-locked' : ''}"><div class="product-art art-${p.id}">${pastry(p.id)}<span class="product-tag">${!unlocked ? `${icon('lock')} 新风味` : p.id === 'roll' ? '店长推荐' : p.id === 'croissant' ? '酥香人气' : p.audience}</span>${unlocked ? `<span class="stock-count">在售 <b>${state.stock[p.id]}</b></span>` : ''}</div><div class="product-body"><div class="product-title"><div><h3>${p.name}</h3><span>${p.en}</span></div><strong>${money(Math.round(p.price * (state.discount ? 0.8 : 1)))}<small>/ 份</small></strong></div><p>${p.description}</p><div class="product-meta"><span>${icon('clock')} ${Math.ceil(p.time * (state.upgrades.helper ? 0.65 : 1))} 秒 / 炉</span><span>6 份 · 食材 ${money(p.cost)}</span></div>${unlocked ? action(`bake:${p.id}`, `${icon(job ? 'oven' : 'plus')} ${job ? '再烤一炉' : '烤一炉'}<span>−${money(p.cost)}</span>`, 'button bake-button full', `data-key="bake-${p.id}" ${state.phase === 'closed' ? 'disabled' : ''}`) : action(`research:${p.id}`, `${icon('lock')} ${state.reputation < p.unlock ? `口碑 ${p.unlock} 解锁研发` : `研发配方 · ${money(p.research)}`}`, 'button research-button full', `${state.reputation < p.unlock ? 'disabled' : ''}`)}${recipeView ? `<div class="recipe-profit">每炉满售收益 <b>+${money(p.price * 6 - p.cost)}</b><span>未扣水电与工资</span></div>` : ''}</div></article>`;
-}
-
-function menu() {
-  return `<section class="menu-section"><div class="section-heading"><div><h2>今日的面包架 <span>TODAY'S FRESH BAKES</span></h2><p>一炉六份，刚刚好的香气。</p></div><div class="menu-tools"><span class="capacity">${occupied(state)} / ${capacity(state)} 陈列位</span>${action('discount', `<span class="switch ${state.discount ? 'on' : ''}"><i></i></span> 八折促销`, 'discount-button', `role="switch" aria-checked="${state.discount}"`)}${action('recipes', `全部食谱 ${icon('arrow')}`, 'text-button')}</div></div><div class="product-grid">${PRODUCTS.filter(p => state.unlocked.includes(p.id)).map(p => productCard(p)).join('')}</div></section>`;
-}
-
+function shop() { return `<div class="day-event">${icon('sun')}<strong>${dayEvent(state).title}</strong><span>${dayEvent(state).description}</span></div><div class="mobile-work-nav">${action('jump:frontdesk', `${icon('people')} 接待`, '')}${action('jump:orders', `${icon('journal')} 订单 ${state.orders.length}/3`, '')}${action('jump:kitchen', `${icon('oven')} 厨房`, '')}</div><div class="work-layout"><div class="work-main">${orderBoard()}${production()}${shelf()}</div><aside class="work-side">${shopScene()}${conversationCard()}${reservationCard()}</aside></div>`; }
 function recipes() {
-  return `<div class="section-intro"><span class="tag">${icon('book')} 已掌握 ${state.unlocked.length} / ${PRODUCTS.length} 份配方</span><p>每一款新品，都是小店新的可能。研发会消耗零钱，解锁后即可烘焙。</p></div><div class="product-grid recipe-grid">${PRODUCTS.map(p => productCard(p, true)).join('')}</div>`;
+  return `<div class="section-intro"><span class="tag">${icon('book')} 今日菜单 ${state.menu.length} / 3 款</span><p>开门前选择三款；做好的面包和未完成的预订需要保留在当天菜单。每炉六份，原料从原料柜扣除。</p></div><div class="product-grid recipe-grid">${PRODUCTS.map(p => { const unlocked = state.unlocked.includes(p.id), onMenu = state.menu.includes(p.id); return `<article class="product-card ${!unlocked ? 'is-locked' : ''}"><div class="product-art art-${p.id}">${pastry(p.id)}<span class="product-tag">${onMenu ? '今日菜单' : unlocked ? '已掌握' : `口碑 ${p.unlock} 研发`}</span></div><div class="product-body"><div class="product-title"><h3>${p.name}</h3><strong>${money(sellingPrice(state, p.id))}<small>/ 份</small></strong></div><p>${p.description}</p><div class="recipe-ingredients">${INGREDIENTS.map(i => `${i.name} ${p.ingredients[i.id]}`).join(' · ')}</div><div class="product-meta"><span>揉面 4s · 烘焙 ${bakeDuration(state, p.id)}s</span><span>6 份成本 ${money(p.cost)}</span></div>${unlocked ? action(`menu:${p.id}`, `${icon(onMenu ? 'check' : 'plus')} ${onMenu ? '移出今日菜单' : '加入今日菜单'}`, `button ${onMenu ? 'outline' : 'primary'} full`, state.phase !== 'prep' ? 'disabled' : '') : action(`research:${p.id}`, `${icon('book')} 研发 · ${money(p.research)}`, 'button outline full', state.reputation < p.unlock ? 'disabled' : '')}${unlocked ? `<div class="recipe-growth"><span>${['基础配方', '改良配方', '招牌配方'][state.recipeLevels[p.id]]} · 好评出餐 ${state.mastery[p.id]} 份</span>${state.recipeLevels[p.id] < 2 ? action(`improve:${p.id}`, `升级${state.recipeLevels[p.id] ? '招牌' : '改良'} · ${money(state.recipeLevels[p.id] ? 160 : 80)}`, 'button outline full', state.mastery[p.id] < (state.recipeLevels[p.id] ? 18 : 6) ? 'disabled' : '') : '<small>售价 +¥3，烘焙缩短 4 秒</small>'}</div>` : ''}</div></article>`; }).join('')}</div>`;
 }
-
 function upgrades() {
-  return `<div class="growth-banner"><div><span class="eyebrow">LITTLE BY LITTLE</span><h2>不必很快，慢慢变好。</h2><p>更大的烤箱、更亮的招牌。把赚来的零钱，花在你期待的未来。</p></div>${icon('wheat')}</div><div class="upgrade-grid">${UPGRADES.map(u => `<article class="upgrade-card panel"><div class="upgrade-icon">${icon(u.icon)}</div><div class="upgrade-heading"><h3>${u.name}</h3><span>Lv. ${state.upgrades[u.id]} / ${u.max}</span></div><p>${u.description}</p><div class="upgrade-dots">${Array.from({ length: u.max }, (_, i) => `<i class="${i < state.upgrades[u.id] ? 'filled' : ''}"></i>`).join('')}</div>${action(`upgrade:${u.id}`, state.upgrades[u.id] >= u.max ? `${icon('check')} 已升至满级` : `升级设备 <span>${money(upgradeCost(state, u))} ${icon('arrow')}</span>`, 'button outline full', state.upgrades[u.id] >= u.max ? 'disabled' : '')}</article>`).join('')}</div><section class="decoration panel"><div><span class="eyebrow">A TOUCH OF YOU</span><h2>给小店，换一种心情。</h2><p>喜欢的颜色，本身就是一种奖励。门面配色免费更换。</p></div><div class="theme-options">${[['sage', '鼠尾草绿'], ['rose', '落日玫瑰'], ['sand', '蜂蜜暖棕']].map(([id, label]) => action(`theme:${id}`, `<i class="theme-swatch ${id}">${state.theme === id ? icon('check') : ''}</i><span>${label}</span>`, `theme-button ${state.theme === id ? 'active' : ''}`, `aria-pressed="${state.theme === id}"`)).join('')}</div></section>`;
+  return `<div class="growth-banner"><div><span class="eyebrow">A LITTLE MORE ROOM TO BREATHE</span><h2>把忙碌，变成从容。</h2><p>设备直接改善工作流程。员工只接手对应岗位；当前每日水电与工资 ${money(wages(state))}。</p></div>${icon('wheat')}</div><div class="upgrade-grid">${UPGRADES.map(u => `<article class="upgrade-card panel"><div class="upgrade-icon">${icon(u.icon)}</div><div class="upgrade-heading"><h3>${u.name}</h3><span>Lv. ${state.upgrades[u.id]} / ${u.max}</span></div><p>${u.description}</p>${action(`upgrade:${u.id}`, state.upgrades[u.id] >= u.max ? `${icon('check')} 已完成` : `添置设备 <span>${money(upgradeCost(state, u))} ${icon('arrow')}</span>`, 'button outline full', state.upgrades[u.id] >= u.max ? 'disabled' : '')}</article>`).join('')}</div><section class="decoration panel"><div><span class="eyebrow">A TOUCH OF YOU</span><h2>一间自己喜欢的小店。</h2><p>门面配色免费更换。</p></div><div class="theme-options">${[['sage', '鼠尾草绿'], ['rose', '落日玫瑰'], ['sand', '蜂蜜暖棕']].map(([id, label]) => action(`theme:${id}`, `<i class="theme-swatch ${id}">${state.theme === id ? icon('check') : ''}</i><span>${label}</span>`, `theme-button ${state.theme === id ? 'active' : ''}`)).join('')}</div></section>`;
 }
-
 function journal() {
-  return `<section class="regulars"><div class="section-heading"><div><h2>那些熟悉的身影 <span>OUR NEIGHBOURS</span></h2><p>一份面包，慢慢变成一份惦记。</p></div><span class="tag">${icon('heart')} ${state.totalServed} 次温暖相遇</span></div><div class="regular-grid">${REGULARS.map(r => { const count = state.affection[r.id], level = Math.min(2, Math.floor(Math.max(0, count - 1) / 4)); return `<article class="regular-card panel"><div class="avatar" style="--avatar-color:${r.color}">${r.initial}<span>${icon('heart')}</span></div><div><h3>${r.name}<small>${count >= 9 ? '老朋友' : count >= 4 ? '渐渐熟悉' : '初次相识'}</small></h3><span class="muted">${r.tag}</span><p>${count ? r.stories[level] : '还没正式认识，备好喜欢的面包，等一次温暖相遇。'}</p><div class="friendship">${Array.from({ length: 5 }, (_, i) => icon('heart', i < Math.ceil(count / 2) ? 'filled-heart' : '')).join('')}<span>暖心互动 ${count} 次</span></div></div></article>`; }).join('')}</div></section>
-    <div class="journal-columns"><section class="panel journal-feed"><div class="panel-heading"><h2>小店流水笺</h2><span class="muted">最近 30 条</span></div>${state.events.length ? state.events.map(e => `<div class="feed-item"><span class="feed-icon ${esc(e.type)}">${icon(e.type === 'sale' ? 'coin' : e.type === 'regular' ? 'heart' : e.type === 'miss' ? 'people' : 'wheat')}</span><div><p>${esc(e.text)}</p><small>第 ${e.day} 天 · ${time(e.minute)}</small></div></div>`).join('') : '<div class="empty-state">还没有故事。烤一炉面包，故事就开始了。</div>'}</section><section class="panel history-panel"><div class="panel-heading"><h2>营业小结</h2>${icon('chart')}</div>${state.history.length ? state.history.map(h => `<article class="history-row"><div><b>第 ${h.day} 天</b><small>售出 ${h.sold} 份 · 招待 ${h.served} 人</small></div><strong class="${h.profit >= 0 ? 'positive' : 'negative'}">${h.profit >= 0 ? '+' : '−'}${money(Math.abs(h.profit))}<small>营业结余</small></strong></article>`).join('') : '<div class="empty-state">结束第一天营业后，<br>这里会记住你的努力。</div>'}</section></div>`;
+  return `<section class="regulars"><div class="section-heading"><div><h2>街坊与小店</h2><p>把订单做好，关系就会慢慢长出来。</p></div><span class="tag">${state.totalServed} 次用心交付</span></div><div class="regular-grid">${REGULARS.map(r => { const n = state.affection[r.id]; return `<article class="regular-card panel"><div class="avatar" style="--avatar-color:${r.color}">${r.initial}</div><div><h3>${r.name}<small>${n >= 9 ? '老朋友' : n >= 4 ? '渐渐熟悉' : '初次相识'}</small></h3><span class="muted">${r.tag}</span><p>${n ? r.stories[Math.min(2, Math.floor(n / 4))] : '记住偏好，把合适的面包交给他。'}</p><span class="muted">好感 ${n} · 合心意的出餐会增加好感</span></div></article>`; }).join('')}</div></section><div class="journal-columns"><section class="panel journal-feed"><div class="panel-heading"><h2>顾客的评价</h2><span class="muted">最近 20 条</span></div>${state.reviews.map(r => `<article class="review-row"><strong class="${r.score >= 75 ? 'positive' : 'negative'}">${r.score}<small>分</small></strong><div><b>${esc(r.name)} · ${getProduct(r.product).name}</b><p>${esc(r.comment)}</p><small>第 ${r.day} 天</small></div></article>`).join('') || '<div class="empty-state">交付第一份订单，听听客人的反馈。</div>'}<div class="panel-heading"><h2>营业流水</h2></div>${state.events.map(e => `<div class="feed-item"><span class="feed-icon ${esc(e.type)}">${icon(e.type === 'sale' ? 'coin' : e.type === 'miss' ? 'people' : 'wheat')}</span><div><p>${esc(e.text)}</p><small>第 ${e.day} 天 · ${time(e.minute)}</small></div></div>`).join('')}</section><section class="panel history-panel"><div class="panel-heading"><h2>营业小结</h2>${icon('chart')}</div>${state.history.map(h => `<article class="history-row"><div><b>第 ${h.day} 天</b><small>交付 ${h.served} 单 · 丢单 ${h.missed}</small></div><strong class="${h.profit >= 0 ? 'positive' : 'negative'}">${h.profit >= 0 ? '+' : '−'}${money(Math.abs(h.profit))}<small>营业利润</small></strong></article>`).join('') || '<div class="empty-state">打烊后，记下今天的经营收获。</div>'}</section></div>`;
 }
-
 function render() {
   const focused = document.activeElement?.dataset.action;
-  app.innerHTML = `${sidebar()}<main>${header()}${metrics()}<div class="page-content">${view === 'shop' ? `<div class="shop-layout">${shopScene()}${orderPanel()}</div>${menu()}` : view === 'recipes' ? recipes() : view === 'upgrades' ? upgrades() : journal()}</div><footer>麦间 · 街角烘焙日记 v1.1 <span>把平凡的日子，烤得香一点。</span><span>慢慢来，好味道值得等待 ${icon('wheat')}</span></footer></main>`;
+  app.innerHTML = `${sidebar()}<main>${header()}${metrics()}<div class="page-content">${view === 'shop' ? shop() : view === 'recipes' ? recipes() : view === 'upgrades' ? upgrades() : journal()}</div><footer>麦间 · 街角烘焙日记 v2.0 <span>用双手，经营一份热腾腾的日常。</span><span>慢慢来，好味道值得等待 ${icon('wheat')}</span></footer></main>`;
   if (view === 'shop') {
     const placeholder = app.querySelector('#bakery-canvas');
     if (sceneCanvas) placeholder.replaceWith(sceneCanvas);
-    else {
-      sceneCanvas = placeholder;
-      bakeryScene = createBakeryScene(sceneCanvas, {
-        getState: () => state,
-        isPaused: () => state.paused || !!modal || document.hidden,
-        getSelected: () => selectedGuest()?.id,
-        onSelect: id => { selectedVisitorId = id; render(); },
-      });
-    }
+    else { sceneCanvas = placeholder; createBakeryScene(sceneCanvas, { getState: () => state, isPaused: () => state.paused || !!modal || document.hidden, getSelected: () => selectedGuest()?.id, onSelect: id => { selectedVisitorId = id; render(); }, onDeliver: (orderId, visitorId) => run(() => deliverOrder(state, orderId, visitorId)) }); }
   }
   if (focused) app.querySelector(`[data-action="${focused}"]`)?.focus({ preventScroll: true });
 }
-
-function openModal(kind) {
-  modal = kind;
-  let content;
+function openModal(kind, id = null) {
+  modal = kind; modalId = id; let content;
   if (kind === 'summary') {
-    const h = state.lastSummary;
-    if (!h) return;
-    content = `<div class="summary-art">${icon('wheat')}</div><p class="eyebrow">DAY ${String(h.day).padStart(2, '0')} · A DAY WELL SPENT</p><h2>今天的努力，香气满满。</h2><p class="modal-subtitle">${h.early ? '提前收好小店，也给自己留一点时间。' : '灯光暗下来，今天的故事先写到这里。'}</p><div class="summary-main"><span>今日营业结余</span><strong class="${h.profit >= 0 ? '' : 'negative'}">${h.profit >= 0 ? '+' : '−'}${money(Math.abs(h.profit))}</strong></div><dl class="summary-ledger"><div><dt>面包与预订收入</dt><dd>${money(h.revenue)}</dd></div><div><dt>食材、水电${state.upgrades.helper ? '与工资' : ''}</dt><dd>−${money(h.expense)}</dd></div><div><dt>余量 ${h.waste} 份 · 闭店折价回收</dt><dd>+${money(h.clearance)}</dd></div><div><dt>今日心愿 ${h.goalMet ? '达成' : '未达成'}</dt><dd>+${money(h.bonus)}</dd></div></dl><div class="summary-people"><span>${icon('people')} 招待 ${h.served} 位客人</span><span>${icon('shop')} 售出 ${h.sold} 份美味</span></div><p class="fine-print">闭店时，未出炉的批次一并完成。剩余面包按售价的约 25% 回收，不隔夜销售。设备与配方投资不计入营业结余。</p>${action('next', `收好今天，迎接明天 ${icon('arrow')}`, 'button primary full')}${action('dismiss', '先看看今天的小店', 'text-button full')}`;
-  } else if (kind === 'close-confirm') {
-    content = `${icon('shop', 'modal-symbol')}<p class="eyebrow">CLOSE FOR TODAY</p><h2>今天就营业到这里？</h2><p class="modal-subtitle">当前时间 ${time(state.minute)}。剩余面包会折价回收，正在烤的批次会一并结算，今天未交付的预订将结束。</p>${action('close', '确认打烊', 'button primary full')}${action('dismiss', '再经营一会儿', 'button outline full')}`;
-  } else if (kind === 'reset-confirm') {
-    content = `${icon('leaf', 'modal-symbol')}<h2>重新开一家小店？</h2><p class="modal-subtitle">这会清除当前进度。建议先回到设置导出存档，留住这段日子。</p>${action('reset', '确认重新开始', 'button danger full')}${action('settings', '返回，先保留进度', 'button outline full')}`;
-  } else {
-    content = `<p class="eyebrow">MAKE YOURSELF AT HOME</p><h2>留住小店的每一天。</h2><p class="modal-subtitle">游戏会自动保存在当前浏览器中。清理浏览器数据或更换设备前，记得导出一份存档。</p><div class="settings-group"><h3>存档与备份</h3>${action('export', `${icon('journal')} 导出存档 ${icon('arrow')}`, 'button outline full')}<label class="button outline full import-button">${icon('book')} 导入存档<input type="file" id="import-save" accept=".json,application/json" /></label></div><div class="settings-group"><h3>经营小贴士</h3><p>选一款面包，每炉烤 6 份。开门后能看见顾客进店、挑选和结账，可以点人物聊天、推荐现货或请等一炉，也可以让顾客自动购买。每天 09:00–18:00 约 108 秒；备货阶段只运行烤箱。暂停或打开弹窗时，时间停止。</p><p>八折促销会降低售价，并让顾客更愿意尝试其他口味。预订每天一份，营业前后都能交付。</p><p>天气与周末会影响客流。错过心愿也没关系，明天还有新机会。</p></div>${action('reset-confirm', '重新开始游戏', 'text-button danger-text full')}`;
-  }
+    const h = state.lastSummary; if (!h) return dismiss();
+    const best = h.byProduct ? PRODUCTS.reduce((a, p) => (h.byProduct[p.id] || 0) > (h.byProduct[a.id] || 0) ? p : a, PRODUCTS[0]) : null;
+    content = `<div class="summary-art">${icon('wheat')}</div><p class="eyebrow">DAY ${h.day} · A DAY WELL SPENT</p><h2>今天的用心，都有回响。</h2><div class="summary-main"><span>今日营业利润</span><strong class="${h.profit >= 0 ? '' : 'negative'}">${h.profit >= 0 ? '+' : '−'}${money(Math.abs(h.profit))}</strong></div><dl class="summary-ledger"><div><dt>订单实收</dt><dd>${money(h.revenue)}</dd></div><div><dt>消耗原料、包装与水电工资</dt><dd>−${money(h.expense)}</dd></div><div><dt>余量折价回收</dt><dd>+${money(h.clearance)}</dd></div><div><dt>营业心愿奖励</dt><dd>+${money(h.bonus)}</dd></div></dl><div class="summary-people"><span>交付 ${h.served} 单</span><span>平均 ${h.average ?? '—'} 分</span><span>丢单 ${h.missed}</span></div><div class="summary-advice"><p>${best && h.sold ? `今日畅销：${best.name}，明天可以适量多备。` : '明天先准备现货，再接下第一张订单。'}</p><p>${h.late ? `${h.late} 张订单未准时交付，下次控制同时接单数量。` : '接单前看好产能，把承诺留给能完成的订单。'}</p><p>${h.waste ? `${h.waste} 份在制或溢出产品损耗，留意金黄出炉和展示容量。` : '刚出炉的面包，更容易收获好评价。'}</p></div><p class="fine-print">原料在备料时计入成本，采购改变原料和零钱，设备研发投资另计。原料留到明天；未完成批次会损耗，成品折价清售，不会自动完成订单。</p>${action('next', `收好经验，迎接明天 ${icon('arrow')}`, 'button primary full')}${action('dismiss', '先看看今天的小店', 'text-button full')}`;
+  } else if (kind === 'close-confirm') content = `${icon('shop', 'modal-symbol')}<h2>今天营业到这里？</h2><p class="modal-subtitle">还有 ${state.orders.length} 张订单、${state.jobs.length + state.trays.length} 盘在制批次。打烊会取消未交付订单、损耗未出炉批次，并清售面包架上的成品。</p>${action('close', '确认打烊', 'button primary full')}${action('dismiss', '继续照顾手里的订单', 'button outline full')}`;
+  else if (kind === 'cancel-confirm') { const o = state.orders.find(o => o.id === Number(id)); content = `<h2>取消这张订单？</h2><p class="modal-subtitle">${o ? `${esc(o.name)}的${getProduct(o.product).name}` : '这张订单'}会记为一次未完成。已取出的面包在有陈列空间时回架，已用包装不退费。</p>${action(`cancel:${id}`, '确认取消', 'button danger full')}${action('dismiss', '继续制作', 'button outline full')}`; }
+  else if (kind === 'reset-confirm') content = `<h2>重新开一家小店？</h2><p class="modal-subtitle">这会替换当前进度，先导出一份存档，留住这段日子。</p>${action('reset', '确认重新开始', 'button danger full')}${action('settings', '返回存档设置', 'button outline full')}`;
+  else content = `<p class="eyebrow">MAKE YOURSELF AT HOME</p><h2>留住小店的每一天。</h2><p class="modal-subtitle">自动保存到当前浏览器，换设备或清理数据前请导出备份。旧版存档可以保留经营进度迁移。</p><div class="settings-group"><h3>存档与备份</h3>${action('export', `${icon('journal')} 导出存档`, 'button outline full')}<label class="button outline full import-button">${icon('book')} 导入存档<input type="file" id="import-save" accept=".json,application/json" /></label></div><div class="settings-group"><h3>经营小贴士</h3><p>开门前选三款菜单。点击备料，4 秒后把面团装进烤箱；指针到金黄区间时手动出炉。</p><p>顾客到柜台后，询问需求并接单。订单夹中取货，再按需求切片、装饰、选择纸袋或礼盒，最后交付。</p><p>一天约 4 分半，最多三张订单；未及时接待或出餐，客人会离开。暂停和打开弹窗都会停止计时。</p><p>设备与员工会解放具体岗位。烘焙帮手负责装炉出炉，包装助手接手普通纸袋，前台店员接常规单和交付。</p></div>${action('reset-confirm', '重新开始游戏', 'text-button danger-text full')}`;
   modalRoot.innerHTML = `<div class="modal-overlay"><section class="modal ${kind === 'summary' ? 'summary-modal' : ''}" role="dialog" aria-modal="true" aria-label="${kind === 'summary' ? '今日营业结算' : '小店设置'}" tabindex="-1">${action('dismiss', icon('close'), 'icon-button modal-close', 'aria-label="关闭弹窗"')}${content}</section></div>`;
-  document.body.classList.add('modal-open');
-  requestAnimationFrame(() => modalRoot.querySelector('.modal')?.focus());
+  document.body.classList.add('modal-open'); requestAnimationFrame(() => modalRoot.querySelector('.modal')?.focus());
 }
-
-function dismiss() { modal = null; modalRoot.innerHTML = ''; document.body.classList.remove('modal-open'); }
-
+function dismiss() { modal = null; modalId = null; modalRoot.innerHTML = ''; document.body.classList.remove('modal-open'); }
 document.addEventListener('click', e => {
-  const target = e.target.closest('[data-action]');
-  if (!target || target.disabled) return;
-  e.preventDefault();
+  const target = e.target.closest('[data-action]'); if (!target || target.disabled) return; e.preventDefault();
   const [name, id, extra] = target.dataset.action.split(':');
   if (['shop', 'recipes', 'upgrades', 'journal'].includes(name)) { view = name; dismiss(); render(); window.scrollTo({ top: 0, behavior: 'instant' }); }
+  else if (name === 'jump') document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   else if (name === 'visitor') { selectedVisitorId = Number(id); render(); }
-  else if (name === 'greet') { selectedVisitorId = Number(id); run(() => greetVisitor(state, id)); }
-  else if (name === 'wait') { selectedVisitorId = Number(id); run(() => waitVisitor(state, id)); }
-  else if (name === 'recommend') { selectedVisitorId = Number(id); run(() => recommendVisitor(state, id, extra)); }
-  else if (name === 'serve') { selectedVisitorId = Number(id); run(() => serveVisitor(state, id)); }
-  else if (name === 'bake') run(() => bake(state, id), '面团送进烤箱啦，稍等片刻。');
-  else if (name === 'open') run(() => openShop(state), '营业牌已翻开，欢迎第一位客人！');
-  else if (name === 'fulfill') run(() => fulfillOrder(state), '预订已送出，感谢你的用心！');
-  else if (name === 'upgrade') run(() => buyUpgrade(state, id), '升级完成，小店又变好了！');
-  else if (name === 'research') run(() => research(state, id), '新配方已收好，可以烤一炉试试啦！');
-  else if (name === 'theme') { state.theme = id; save(); render(); toast('门面配色已更换，在我的小店看看吧。'); }
-  else if (name === 'discount') { state.discount = !state.discount; save(); render(); toast(state.discount ? '八折促销已开启，顾客更愿意尝试不同口味。' : '恢复原价，用好味道留住客人。'); }
+  else if (name === 'prepare') run(() => prepareBatch(state, id));
+  else if (name === 'load') run(() => loadOven(state, id));
+  else if (name === 'unload') run(() => removeBatch(state, id));
+  else if (name === 'buy') run(() => buyIngredient(state, id));
+  else if (name === 'menu') run(() => toggleMenu(state, id));
+  else if (name === 'open') run(() => openShop(state), '营业开始，先听听第一位客人的需求。');
+  else if (name === 'ask') { selectedVisitorId = Number(id); run(() => askVisitor(state, id)); }
+  else if (name === 'wait') run(() => waitVisitor(state, id));
+  else if (name === 'recommend') run(() => recommendVisitor(state, id, extra));
+  else if (name === 'accept') run(() => acceptOrder(state, id));
+  else if (name === 'decline') run(() => declineVisitor(state, id));
+  else if (name === 'assemble') run(() => startAssembly(state, id));
+  else if (name === 'plan') { const o = state.orders.find(o => o.id === Number(id)); if (o) run(() => prepareBatch(state, o.product)); }
+  else if (name === 'slice') run(() => sliceOrder(state, id));
+  else if (name === 'decorate') run(() => decorateOrder(state, id, extra));
+  else if (name === 'pack') run(() => packOrder(state, id, extra));
+  else if (name === 'deliver') run(() => deliverOrder(state, id));
+  else if (name === 'reservation') run(() => acceptReservation(state), '预订已加入订单夹，记得 14:00–16:00 交付礼盒。');
+  else if (name === 'cancel') { dismiss(); run(() => cancelOrder(state, id)); }
+  else if (name === 'upgrade') run(() => buyUpgrade(state, id), '工作能力升级完成。');
+  else if (name === 'improve') run(() => improveRecipe(state, id), '配方成长完成，新接订单与后续批次按新配方执行。');
+  else if (name === 'research') run(() => research(state, id), '新配方已解锁，开门前可加入菜单。');
+  else if (name === 'theme') { state.theme = id; save(); render(); }
+  else if (name === 'discount') { state.discount = !state.discount; save(); render(); }
   else if (name === 'pause') { state.paused = !state.paused; save(); render(); }
-  else if (['settings', 'close-confirm', 'reset-confirm', 'summary'].includes(name)) openModal(name);
+  else if (['settings', 'summary', 'close-confirm', 'reset-confirm', 'cancel-confirm'].includes(name)) openModal(name, id);
   else if (name === 'dismiss') dismiss();
   else if (name === 'close') { dismiss(); run(() => closeShop(state)); openModal('summary'); }
   else if (name === 'next') { dismiss(); run(() => nextDay(state)); }
-  else if (name === 'reset') { state = createGame(); selectedVisitorId = null; view = 'shop'; dismiss(); save(); render(); toast('新的小店，新的一天。欢迎回来。'); }
-  else if (name === 'export') {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob), a = document.createElement('a');
-    a.href = url; a.download = `麦间-第${state.day}天.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast('存档已导出，替你留住这段日子。');
-  }
+  else if (name === 'reset') { state = createGame(); selectedVisitorId = null; view = 'shop'; dismiss(); save(); render(); }
+  else if (name === 'export') { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = `麦间-第${state.day}天.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('存档已导出。'); }
 });
-
+document.addEventListener('dragstart', e => { const card = e.target.closest('.ticket-card.packed'); if (card && e.dataTransfer) { e.dataTransfer.setData('application/x-maijian-order', card.dataset.orderId); e.dataTransfer.effectAllowed = 'move'; } });
 document.addEventListener('change', async e => {
-  if (e.target.id !== 'import-save') return;
-  const file = e.target.files[0];
-  if (!file) return;
-  try {
-    if (file.size > 1000000) throw Error('存档文件过大。');
-    const raw = JSON.parse(await file.text());
-    if (!validateSave(raw)) throw Error('存档格式不正确，原来的进度已保留。');
-    if (!window.confirm(`载入第 ${raw.day} 天的存档？这将替换当前进度。`)) return;
-    state = hydrateGame(raw); selectedVisitorId = null; view = 'shop'; dismiss(); save(); render(); toast('存档载入成功，小店等你很久啦。');
-    if (state.phase === 'closed') openModal('summary');
-  } catch (error) { toast(error instanceof SyntaxError ? '无法解析存档，请选择导出的 JSON 文件。' : error.message); }
-  finally { e.target.value = ''; }
+  if (e.target.id !== 'import-save') return; const file = e.target.files[0]; if (!file) return;
+  try { if (file.size > 1000000) throw Error('存档文件过大。'); const raw = JSON.parse(await file.text()); if (!validateSave(raw)) throw Error('存档格式不正确，原有进度已保留。'); if (!window.confirm(`载入第 ${raw.day} 天的存档，替换当前进度？`)) return; state = hydrateGame(raw); selectedVisitorId = null; view = 'shop'; dismiss(); save(); render(); if (state.phase === 'closed') openModal('summary'); else toast('存档已载入。'); }
+  catch (err) { toast(err instanceof SyntaxError ? '无法解析存档，请选择导出的 JSON 文件。' : err.message); } finally { e.target.value = ''; }
 });
-
-document.addEventListener('keydown', e => {
-  if (!modal) return;
-  if (e.key === 'Escape') dismiss();
-  if (e.key === 'Tab') {
-    const items = [...modalRoot.querySelectorAll('button:not(:disabled), input, [tabindex="0"]')];
-    const first = items[0], last = items.at(-1);
-    if (e.shiftKey && (document.activeElement === first || document.activeElement.classList.contains('modal'))) { e.preventDefault(); last?.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
-  }
-});
+document.addEventListener('keydown', e => { if (!modal) return; if (e.key === 'Escape') dismiss(); if (e.key === 'Tab') { const items = [...modalRoot.querySelectorAll('button:not(:disabled), input')], first = items[0], last = items.at(-1); if (e.shiftKey && (document.activeElement === first || document.activeElement.classList.contains('modal'))) { e.preventDefault(); last?.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); } } });
 modalRoot.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) dismiss(); });
-window.addEventListener('beforeunload', save);
-document.addEventListener('visibilitychange', save);
-setInterval(() => {
-  if (modal || document.hidden || state.paused || state.phase === 'closed') return;
-  const previous = state.phase;
-  advance(state); save(); render();
-  if (previous === 'open' && state.phase === 'closed') openModal('summary');
-}, 1000);
-render(); save();
-if (loadMessage) toast(loadMessage);
-if (state.phase === 'closed') openModal('summary');
+window.addEventListener('beforeunload', save); document.addEventListener('visibilitychange', save);
+setInterval(() => { if (modal || document.hidden || state.paused || state.phase === 'closed') return; const phase = state.phase; advance(state); save(); render(); if (phase === 'open' && state.phase === 'closed') openModal('summary'); }, 1000);
+render(); save(); if (loadMessage) toast(loadMessage); if (state.phase === 'closed') openModal('summary');

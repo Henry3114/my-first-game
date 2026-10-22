@@ -1,8 +1,8 @@
-import { PRODUCTS, getProduct } from './game.js';
+import { PRODUCTS, getProduct, ovenStatus } from './game.js';
 
 // A persistent canvas survives the dashboard's data updates. Customer identities
 // and positions are keyed to engine visitors, never to a looping decoration.
-export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSelected }) {
+export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSelected, onDeliver }) {
   let ctx = canvas.getContext('2d');
   const front = ctx, background = document.createElement('canvas');
   let backgroundKey = '';
@@ -110,10 +110,12 @@ export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSel
     box(571, 262, 142, 72, accent, 5); box(559, 253, 166, 13, '#b1976c', 3);
     box(623, 218, 50, 35, '#526655', 4); box(628, 223, 40, 18, '#c6d2b5', 2); text('¥', 649, 237, 14, '#5e7657', 'center');
     box(591, 269, 99, 48, '#ffffff12', 3); text('MAI JIAN', 641, 298, 12, '#f4eed7', 'center', 'Georgia');
+    const assembling = s.orders.find(o => o.stage === 'assembling');
+    if (assembling) { box(571, 240, 45, 7, '#c7b894', 2); bread(assembling.product, 594, 239, .55); if (assembling.sliced) line([[582, 217], [582, 235]], '#fff0c9', 2); }
     plant(38, 292, .8); plant(773, 327, 1.03);
     // Oven and steam only run for real baking jobs.
     box(321, 155, 190, 61, '#d0c4a8', 7); box(332, 166, 134, 39, '#686f58', 4);
-    box(338, 172, 122, 26, s.jobs.length ? '#b57d43' : '#858873', 3);
+    box(338, 172, 122, 26, s.jobs.length ? ovenStatus(s.jobs[0]).tone === 'golden' ? '#d3ab59' : ovenStatus(s.jobs[0]).tone === 'burnt' ? '#745c44' : '#b57d43' : '#858873', 3);
     if (s.jobs.length) {
       bread(s.jobs[0].product, 371, 193, .55); bread(s.jobs[0].product, 422, 193, .55);
       for (let i = 0; i < 3; i++) { const y = 155 - ((clock * 15 + i * 13) % 37); ctx.globalAlpha = .2 * (1 - (155 - y) / 37); line([[370 + i * 23, y], [376 + i * 23, y - 9], [370 + i * 23, y - 18]], '#a8987a', 3); ctx.globalAlpha = 1; }
@@ -146,7 +148,7 @@ export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSel
     if (look === 3) { ctx.strokeStyle = '#8d8b76'; ctx.lineWidth = 1; ctx.strokeRect(-14, -79, 12, 10); ctx.strokeRect(2, -79, 12, 10); line([[-2, -75], [2, -75]], '#8d8b76', 1); }
     line([[-3, -64], [0, v.outcome === 'miss' ? -66 : -62], [3, -64]], '#ac7e63', 1.4);
     if (v.outcome === 'sale') {
-      line([[25, -30], [30, -20]], '#c09869', 2); ctx.strokeStyle = '#a3875f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(31, -20, 7, Math.PI, 0); ctx.stroke(); box(19, -20, 25, 29, '#d9b67d', 3); text('麦', 31, 0, 10, '#8e7c55', 'center');
+      line([[25, -30], [30, -20]], '#c09869', 2); ctx.strokeStyle = '#a3875f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(31, -20, 7, Math.PI, 0); ctx.stroke(); box(19, -20, 25, 29, v.package === 'gift' ? '#c19a7b' : '#d9b67d', 3); text('麦', 31, 0, 10, '#8e7c55', 'center'); if (v.package === 'gift') { line([[20, -12], [43, -12]], '#ede0b8', 3); line([[31, -20], [31, 8]], '#ede0b8', 3); }
     }
     ctx.restore();
   }
@@ -161,15 +163,16 @@ export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSel
     const slot = v.id % 3;
     if (v.stage === 'arriving') return pathPoint([[1040, 469], [883, 469], [883, 359]], progress);
     if (v.stage === 'browsing') return pathPoint([[883, 359], [410 + slot * 48, 360], [270 + slot * 48, 354]], progress);
-    if (v.stage === 'waiting') {
-      const q = s.visitors.filter(c => c.stage === 'waiting').indexOf(v);
+    if (['waiting', 'ordering'].includes(v.stage)) {
+      const q = s.visitors.filter(c => ['waiting', 'ordering'].includes(c.stage)).indexOf(v) + s.visitors.filter(c => c.stage === 'paying').length;
       return { x: 625 + q * 57, y: 365 + q * 11 };
     }
     if (v.stage === 'paying') return { x: 625, y: 353 };
     return pathPoint([[625, 356], [883, 367], [883, 469], [1060, 469]], progress);
   }
   function bubble(v, pose, selected) {
-    const short = v.stage === 'arriving' ? '你好呀！' : v.stage === 'browsing' ? '让我挑一挑…' : v.stage === 'waiting' ? `${v.greeted ? '♡ ' : ''}${getProduct(v.selected || v.requested).name} ×${v.quantity}` : v.outcome === 'sale' ? '谢谢，下次见！' : '下次早点来…';
+    const order = getState().orders.find(o => o.visitorId === v.id);
+    const short = v.stage === 'arriving' ? '你好呀！' : v.stage === 'browsing' ? '让我挑一挑…' : v.stage === 'ordering' ? order?.stage === 'packed' ? '我的订单好啦？' : `等${getProduct(v.selected || v.requested).name}出餐` : v.stage === 'waiting' ? `${getProduct(v.selected || v.requested).name} ×${v.quantity}` : v.outcome === 'sale' ? '谢谢，下次见！' : '下次早点来…';
     const width = Math.min(192, Math.max(105, short.length * 14 + 20));
     const x = Math.max(width / 2 + 10, Math.min(990 - width / 2, pose.x)), y = pose.y - 139;
     box(x - width / 2, y, width, 29, selected ? '#f9efce' : '#fffdf0f5', 8, selected ? '#c5ad71' : '#ddd6bf');
@@ -184,7 +187,7 @@ export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSel
     if (pixelRatio !== dpr) { canvas.width = W * dpr; canvas.height = H * dpr; pixelRatio = dpr; }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const s = getState();
-    const cacheKey = JSON.stringify([dpr, s.theme, s.day, s.phase, s.discount, s.stock, s.jobs.map(j => [j.product, j.remaining]), s.visitors.some(v => v.stage === 'arriving' || (v.stage === 'leaving' && v.remaining < 3))]);
+    const cacheKey = JSON.stringify([dpr, s.theme, s.day, s.phase, s.discount, s.stock, s.jobs.map(j => [j.product, j.elapsed]), s.orders.map(o => [o.product, o.stage, o.packaging, o.sliced]), s.visitors.some(v => v.stage === 'arriving' || (v.stage === 'leaving' && v.remaining < 3))]);
     if (backgroundKey !== cacheKey) {
       background.width = W * dpr; background.height = H * dpr;
       ctx = background.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -207,10 +210,10 @@ export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSel
       if (v.id === selected) { ctx.beginPath(); ctx.ellipse(pose.x, pose.y, 30, 9, 0, 0, Math.PI * 2); ctx.strokeStyle = '#b2a36b'; ctx.lineWidth = 2; ctx.stroke(); }
       person(v, pose.x, pose.y, moving, clock);
       text(v.name, pose.x, pose.y + 19, 12, '#6f7862', 'center');
-      if (v.stage === 'waiting') { box(pose.x - 20, pose.y + 24, 40, 3, '#c1bea5', 2); box(pose.x - 20, pose.y + 24, 40 * v.remaining / v.duration, 3, '#8d9e71', 2); }
+      if (['waiting', 'ordering'].includes(v.stage)) { box(pose.x - 20, pose.y + 24, 40, 3, '#c1bea5', 2); box(pose.x - 20, pose.y + 24, 40 * v.remaining / v.duration, 3, '#8d9e71', 2); }
     }
     for (const { v, pose } of ordered) {
-      if (v.stage === 'waiting' || v.stage === 'paying' || v.id === selected) bubble(v, pose, v.id === selected);
+      if (v.stage === 'waiting' || v.stage === 'ordering' || v.stage === 'paying' || v.id === selected) bubble(v, pose, v.id === selected);
       if (v.stage === 'paying') {
         const age = Math.min(1, (v.duration - v.remaining + Math.min(1, clock - pose.since)) / v.duration);
         ctx.globalAlpha = 1 - age * .4;
@@ -221,12 +224,15 @@ export function createBakeryScene(canvas, { getState, isPaused, onSelect, getSel
     if (paused && s.phase === 'open') { box(0, 0, W, H, '#f8f6eb22'); }
     frame = requestAnimationFrame(draw);
   }
-  function hit(e) {
+  function closest(e) {
     const rect = canvas.getBoundingClientRect(), x = (e.clientX - rect.left) / rect.width * W, y = (e.clientY - rect.top) / rect.height * H;
-    const closest = [...poses].map(([id, p]) => ({ id, d: Math.hypot(p.x - x, p.y - 45 - y) })).sort((a, b) => a.d - b.d)[0];
-    if (closest && closest.d < 65) onSelect(closest.id);
+    const match = [...poses].map(([id, p]) => ({ id, d: Math.hypot(p.x - x, p.y - 45 - y) })).sort((a, b) => a.d - b.d)[0];
+    return match && match.d < 65 ? match.id : null;
   }
-  canvas.addEventListener('click', hit);
+  function hit(e) { const id = closest(e); if (id !== null) onSelect(id); }
+  function dragover(e) { if ([...(e.dataTransfer?.types || [])].includes('application/x-maijian-order')) e.preventDefault(); }
+  function drop(e) { const orderId = Number(e.dataTransfer?.getData('application/x-maijian-order')); const id = closest(e); if (orderId && id !== null) { e.preventDefault(); onDeliver?.(orderId, id); } }
+  canvas.addEventListener('click', hit); canvas.addEventListener('dragover', dragover); canvas.addEventListener('drop', drop);
   frame = requestAnimationFrame(draw);
-  return { destroy() { cancelAnimationFrame(frame); canvas.removeEventListener('click', hit); } };
+  return { destroy() { cancelAnimationFrame(frame); canvas.removeEventListener('click', hit); canvas.removeEventListener('dragover', dragover); canvas.removeEventListener('drop', drop); } };
 }

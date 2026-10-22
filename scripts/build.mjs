@@ -6,7 +6,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const read = filename => readFile(path.join(root, filename), 'utf8');
 const dataUrl = async filename => `data:image/svg+xml;base64,${Buffer.from(await read(filename)).toString('base64')}`;
 const [template, css, engine, art, scene, app, storefront, favicon] = await Promise.all([
-  read('scripts/page.html'), Promise.all([read('styles.css'), read('scene.css')]).then(parts => parts.join('\n')), read('game.js'), read('art.js'), read('scene.js'), read('app.js'),
+  read('scripts/page.html'), Promise.all([read('styles.css'), read('scene.css'), read('work.css')]).then(parts => parts.join('\n')), read('game.js'), read('art.js'), read('scene.js'), read('app.js'),
   dataUrl('assets/storefront.svg'), dataUrl('assets/favicon.svg'),
 ]);
 
@@ -20,7 +20,7 @@ const code = [stripExports(engine), stripExports(art), stripExports(scene).repla
 const html = template
   .replace('href="assets/favicon.svg"', () => `href="${favicon}"`)
   .replace('<link rel="stylesheet" href="styles.css" />', () => `<style>\n${css}\n</style>`)
-  .replace(/^[ \t]*<link rel="stylesheet" href="scene.css" \/>\r?\n/gm, '')
+  .replace(/^[ \t]*<link rel="stylesheet" href="(?:scene|work).css" \/>\r?\n/gm, '')
   .replace('<script type="module" src="app.js"></script>', () => `<script>\n(() => {\n${code}\n})();\n</script>`);
 await writeFile(path.join(root, 'index.html'), html);
 console.log(`Built standalone index.html (${Buffer.byteLength(html).toLocaleString()} bytes); no external assets required.`);

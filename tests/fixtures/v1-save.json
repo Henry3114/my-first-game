@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "day": 5,
+  "cash": 762,
+  "reputation": 38,
+  "phase": "prep",
+  "minute": 540,
+  "stock": {
+    "roll": 0,
+    "toast": 0,
+    "croissant": 0,
+    "cinnamon": 0,
+    "cake": 0,
+    "tart": 0
+  },
+  "jobs": [
+    {
+      "id": 1,
+      "product": "roll",
+      "quantity": 6,
+      "remaining": 4,
+      "duration": 7
+    }
+  ],
+  "unlocked": [
+    "roll",
+    "toast",
+    "croissant"
+  ],
+  "upgrades": {
+    "oven": 1,
+    "counter": 0,
+    "sign": 0,
+    "helper": 0
+  },
+  "affection": {
+    "lin": 7,
+    "yu": 0
+  },
+  "stats": {
+    "revenue": 0,
+    "expense": 18,
+    "sold": 0,
+    "served": 0,
+    "missed": 0,
+    "waste": 0,
+    "bonus": 0
+  },
+  "totalRevenue": 0,
+  "totalServed": 0,
+  "orderDone": false,
+  "discount": false,
+  "paused": false,
+  "rng": 42,
+  "elapsed": 0,
+  "nextId": 3,
+  "events": [
+    {
+      "id": 2,
+      "text": "一炉奶油餐包进烤箱啦，期待热乎乎的出炉。",
+      "type": "bake",
+      "minute": 540,
+      "day": 5
+    }
+  ],
+  "history": [],
+  "theme": "sage",
+  "lastSummary": null,
+  "visitors": []
+}
